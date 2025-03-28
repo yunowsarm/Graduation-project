@@ -1,0 +1,57 @@
+.container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.userCard {
+  background-color: #2a2a2a;
+  padding: 12px;
+  margin: 16px 0;
+  border-radius: 6px;
+  display: flex; /* 让内容和按钮横向排列 */
+  align-items: center; /* 垂直居中 */
+  justify-content: space-between; /* 两端对齐 */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.userCard:hover {
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-size: 18px;
+  font-weight: bold;
+  color: #b3b3b3;
+}
+
+.email {
+  font-size: 14px;
+  color: #b0bec5;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px; /* 按钮之间的间距 */
+}
+
+.button {
+  background-color: #545454;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.button:hover {
+  background-color: #626262;
+}

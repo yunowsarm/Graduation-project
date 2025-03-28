@@ -1,0 +1,94 @@
+/* SideBar.module.css */
+.sidebar {
+  width: 12%;
+  padding: 20px;
+  margin-left: 15%;
+  margin-right: 1%;
+  background-color: #000000;
+  color: #fff;
+  height: 100vh;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: larger;
+  transition: background-color 0.3s ease, color 0.3s ease; /* 为 sidebar 添加背景颜色和字体颜色的过渡 */
+  border: solid 5px #333;
+}
+
+nav span {
+  display: inline-block;
+  transform: translateY(-3px);
+  transition: transform 0.3s ease; /* 向上移动的过渡效果 */
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  transition: flex-grow 0.3s ease; /* 添加ul的伸缩过渡效果 */
+}
+
+nav li {
+  margin: 15px 0;
+  display: flex;
+  justify-content: flex-start; /* 向左对齐 */
+  align-items: center;
+  transition: margin 0.3s ease; /* 为li元素的间距添加过渡 */
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  text-align: left; /* 向左对齐 */
+  width: 100%;
+  transition: color 0.3s ease, transform 0.3s ease; /* 为链接添加过渡效果 */
+}
+
+nav a:hover {
+  color: #1da1f2; /* 鼠标悬停时改变链接颜色 */
+}
+
+.profile {
+  padding: 10px 0;
+  border-top: 1px solid #333;
+  display: flex;
+  flex-direction: column; /* 改为按列排列 */
+  justify-content: flex-start;
+  align-items: flex-start; /* 左对齐 */
+  text-align: left;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.profile p {
+  width: 100%;
+  line-height: 1.5;
+  overflow-wrap: break-word; /* 保证文本在必要时换行 */
+  white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+  margin-top: 10px;
+  transition: color 0.3s ease, border-color 0.3s ease; /* 为profile添加内边距和边框颜色的过渡效果 */
+}
+.profile p:hover {
+  color: #1da1f2; /* 悬停时边框颜色变化 */
+}
+
+.redDot {
+  position: relative;
+  right: 0px;
+  bottom: 6px;
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+
+  align-items: center;
+  justify-content: center;
+}

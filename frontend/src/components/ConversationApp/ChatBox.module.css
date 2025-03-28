@@ -1,0 +1,7 @@
+/* ChatBox.module.css */
+.messages_container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh; /* 根据需要设置合适的高度 */
+  overflow: hidden;
+}

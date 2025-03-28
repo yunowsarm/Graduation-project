@@ -1,0 +1,11 @@
+.emojiPickerWrapper {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  transform: translate(30%, -13.5%); /* 根据需求居中 */
+  scrollbar-width: thin; /* 设置滚动条样式为细线 */
+  scrollbar-color: #ffffff #ffffff; /* 设置滚动条颜色 */
+}

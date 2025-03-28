@@ -1,0 +1,45 @@
+.content {
+  padding: 2%;
+  flex: 1;
+  background-color: #000;
+  color: #fff;
+  height: 100vh;
+  overflow-y: scroll; /* 保持滚动功能 */
+  border-radius: 3%;
+  /* 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.scrollToTopButton {
+  position: fixed;
+  bottom: 20px;
+  right: 24.2%;
+  width: 30px;
+  height: 30px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.scrollToTopButton:hover {
+  background-color: #0056b3;
+  transform: scale(1.5);
+}
+
+.scrollToTopButton i {
+  font-size: 16px;
+  margin-top: 50%;
+  transform: translateY(-30%);
+}

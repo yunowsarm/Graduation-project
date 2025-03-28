@@ -1,0 +1,190 @@
+.pageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+.homepage {
+  border: solid 1px #fff;
+}
+.mainContainer {
+  flex: 2; /* 确保它只占用合理的空间 */
+  overflow-y: auto; /* 如果内容过多，添加滚动条 */
+  max-width: 100%; /* 防止撑开 */
+}
+.search_container {
+  height: 100vh;
+  width: 100%;
+  background-color: #000000;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  scroll-behavior: smooth;
+  min-height: 100vh;
+  position: relative;
+}
+
+.search_tabs {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #9f9f9f;
+  margin-top: -35px;
+  padding: 15px 0;
+  position: relative;
+  top: 20%;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.search_tabs.show {
+  opacity: 1;
+}
+
+.search_tab {
+  font-size: 16px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.3s ease, border-bottom 0.1s ease;
+}
+
+.search_tab:hover {
+  color: white;
+}
+
+.search_tab.active {
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  border-bottom: 3px solid rgb(255, 255, 255);
+}
+.search_content {
+  top: 20%;
+  position: relative;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.search_content.show {
+  opacity: 1;
+}
+
+.search_input {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 500px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #000000;
+  box-sizing: border-box;
+  font-family: "Noto Sans SC", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 40px;
+  transition: all 0.3s ease;
+}
+
+.search_input:focus {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.search_input::placeholder {
+  color: #000000;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.search_input:focus::placeholder,
+.search_input:not(:placeholder-shown)::placeholder {
+  opacity: 0;
+}
+
+.clear_button {
+  position: absolute;
+  right: 60px;
+  top: 8%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 30px;
+}
+
+.clear_button:hover {
+  color: #ff8800;
+}
+
+.search_suggestions {
+  position: absolute;
+  top: calc(8% + 22px); /* 通过动态计算，让建议框在输入框下方 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 500px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 1;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s ease-in-out, opacity 0.35s ease-in-out;
+}
+
+.search_suggestions.open {
+  max-height: fit-content;
+  opacity: 1;
+}
+
+.suggestion_item {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.suggestion_item.highlight {
+  background-color: #ffeb3b;
+  font-weight: bold;
+}
+
+.suggestion_item:hover {
+  background-color: #f1f1f1;
+}
+
+@media screen and (max-width: 600px) {
+  .search_input {
+    width: 90%;
+  }
+
+  .search_suggestions {
+    width: 90%;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+}
+
+body {
+  overflow: hidden;
+}
+
+.no_results {
+  color: #fff;
+  font-size: 20px;
+  text-align: center;
+  margin-top: 50px;
+  display: flex; /* 使用 Flexbox 居中 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  height: 50vh; /* 让它占据一定高度，使其更居中 */
+}

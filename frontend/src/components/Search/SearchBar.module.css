@@ -1,0 +1,131 @@
+.search_container {
+  height: 100vh;
+  width: 100%;
+  background-color: #000000;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  scroll-behavior: smooth;
+  min-height: 100vh;
+  position: relative;
+}
+
+.search_container::-webkit-scrollbar {
+  display: none; /* 隐藏滚动条 */
+}
+
+.search_icon {
+  position: absolute;
+  top: 30%;
+  left: 48%;
+  width: 300px; /* 调整大小 */
+  height: auto;
+  margin-bottom: 8px; /* 使 logo 和输入框之间有一定间距 */
+  transform: translate(-50%, -50%);
+  color: #f1f1f1;
+}
+
+.search_input {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 500px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #000000;
+  box-sizing: border-box;
+  font-family: "Noto Sans SC", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 40px;
+  transition: all 0.3s ease;
+}
+
+.search_input:focus {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-shadow: 0 0 10px rgba(255, 225, 0, 0.5);
+}
+
+.search_input::placeholder {
+  transition: opacity 0.3s ease;
+}
+
+.search_input:focus::placeholder,
+.search_input:not(:placeholder-shown)::placeholder {
+  opacity: 0;
+}
+
+.clear_button {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 30px;
+}
+
+.clear_button:hover {
+  color: #ff8800;
+}
+
+.search_suggestions {
+  position: absolute; /* 让建议框绝对定位 */
+  top: calc(50% + 22px); /* 通过动态计算，让建议框在输入框下方 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 500px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 1;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s ease-in-out, opacity 0.35s ease-in-out;
+}
+
+.search_suggestions.open {
+  max-height: fit-content;
+  opacity: 1;
+}
+
+.suggestion_item {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.suggestion_item.highlight {
+  background-color: #ffeb3b;
+  font-weight: bold;
+}
+
+.suggestion_item:hover {
+  background-color: #f1f1f1;
+}
+
+@media screen and (max-width: 600px) {
+  .search_input {
+    width: 90%;
+  }
+
+  .search_suggestions {
+    width: 90%;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+}

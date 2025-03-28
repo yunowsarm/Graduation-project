@@ -1,0 +1,32 @@
+.postInfo {
+  margin-top: 16px;
+  padding-top: 20px;
+  border-top: 1px solid #555; /* 添加分隔线 */
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #c8c8c8;
+}
+
+.icon .iconColor {
+  cursor: pointer;
+  transition: color 0.3s ease-in-out
+}
+
+.icon .iconColor:hover {
+  color: #fff;
+}
+
+.icon span span{
+  position: relative;
+  top: -2px
+}
+
+.icon i {
+  transition: color 0.3s ease, transform 0.2s ease; /* 平滑颜色变化和缩放效果 */
+}
+
+.liked {
+  color: red; /* 图标整体变红 */
+}
+

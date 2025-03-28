@@ -1,0 +1,145 @@
+/* 覆盖模态窗口的背景 */
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7); /* 更深的透明效果 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 模态窗口样式 */
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px; /* 圆角更柔和 */
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center; /* 居中内容 */
+}
+
+/* 表单组样式 */
+.form_group {
+  margin-bottom: 20px;
+}
+
+/* 表单组中的标签样式 */
+.form_group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333; /* 深灰色字体 */
+}
+
+/* 表单组中的输入框样式 */
+.form_group input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* 确保 placeholder 可见 */
+.form_group input::placeholder {
+  color: #bbb;
+  opacity: 1;
+}
+
+/* 居中头像容器 */
+.avatar_container {
+  margin: 20px auto;
+  position: relative;
+  cursor: pointer;
+  width: 120px;
+  height: 120px;
+}
+
+/* 隐藏文件输入框 */
+.hidden_input {
+  display: none;
+}
+
+/* 头像预览样式 */
+.avatar_preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+/* 鼠标悬停时的效果 */
+.avatar_preview:hover {
+  border-color: #4caf50;
+  transform: scale(1.05);
+}
+
+/* 模态窗口的操作按钮容器 */
+.modal_actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* 保存按钮样式 */
+.save_button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.save_button:hover {
+  background-color: #45a049; /* 更深的绿色 */
+}
+
+/* 取消按钮样式 */
+.cancel_button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.cancel_button:hover {
+  background-color: #e53935; /* 更深的红色 */
+}
+
+/* 自适应模态窗口的显示 */
+@media (max-width: 768px) {
+  .modal {
+    width: 90%;
+    padding: 15px;
+  }
+  .avatar_preview {
+    width: 100px;
+    height: 100px;
+  }
+  .avatar_container {
+    width: 100px;
+    height: 100px;
+  }
+  .save_button,
+  .cancel_button {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+}

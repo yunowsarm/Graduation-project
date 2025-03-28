@@ -1,0 +1,12 @@
+.bookMark {
+  padding: 2%;
+  flex: 1;
+  background-color: #000;
+  color: #fff;
+  height: 100vh;
+  overflow-y: scroll; /* 保持滚动功能 */
+  border-radius: 3%;
+  /* 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}

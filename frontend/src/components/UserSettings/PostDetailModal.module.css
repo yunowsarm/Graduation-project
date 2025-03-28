@@ -1,0 +1,277 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* 更深的透明效果 */
+  backdrop-filter: blur(10px); /* 背景虚化效果 */
+  display: flex;
+  color: #000000;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #ffffff;
+  color: #000000;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin: 0 auto; /* 水平居中 */
+}
+
+.modalWrapper {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  height: 100vh; /* 占满整个视口高度 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 可选：背景遮罩 */
+}
+
+.modalContent p {
+  padding-left: 15px;
+  color: #000000;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px; /* 相对于 modalContent 的内部边距 */
+  right: 10px; /* 同上 */
+  background: #ffffff;
+  border: none;
+  font-size: 18px;
+  color: #333;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #000000;
+  transform: scale(1.1);
+  color: #ffffff;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 每行三列 */
+  gap: 16px; /* 均匀间距 */
+  justify-items: center; /* 居中对齐每个网格中的内容 */
+  margin: 20px 16px 20px 16px;
+}
+
+.gridItem {
+  width: 100%; /* 自适应父容器宽度 */
+  aspect-ratio: 1 / 1; /* 强制图片容器为正方形 */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fffefe; /*背景色区分未加载时的样式 */
+  border-radius: 8px;
+}
+
+.gridImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 图片裁剪以适应父容器 */
+  object-position: center; /* 从图片中心裁剪 */
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.commentsSection {
+  margin-top: 20px;
+}
+
+.commentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: hidden;
+}
+
+.comment {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.comment p {
+  text-align: left;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 用户头像和名字之间的间距 */
+  margin-bottom: 8px; /* 评论内容与用户信息的间距 */
+}
+
+.commentAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; /* 圆形头像 */
+  object-fit: cover;
+  background-color: #f0f0f0; /* 默认背景色 */
+}
+
+.commentUsername {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.commentTime {
+  font-size: 12px;
+  color: #888;
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.commentItem {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.commentItem strong {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.commentSection {
+  position: fixed; /* 固定位置 */
+  top: 0; /* 距离顶部为 0 */
+  right: 0; /* 距离右侧为 0 */
+  width: 450px; /* 固定宽度 */
+  height: 100vh; /* 占满视口高度 */
+  background-color: #ffffff;
+  border-left: 1px solid #ddd; /* 左侧边框分隔 */
+  padding: 20px;
+  overflow-y: auto; /* 启用垂直滚动 */
+  scrollbar-width: none; /* 隐藏滚动条 (Firefox) */
+  -ms-overflow-style: none; /* 隐藏滚动条 (IE 10+) */
+  z-index: 1000; /* 确保在其他内容之上 */
+}
+
+.commentSection::-webkit-scrollbar {
+  display: none; /* 隐藏滚动条 (Chrome、Safari) */
+}
+
+.commentSection p {
+  color: #000000;
+}
+
+.postContent {
+  overflow-y: auto;
+  max-height: 260px;
+  overflow-wrap: break-word; /* 保证文本在必要时换行 */
+  white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+}
+
+.container {
+  margin-right: 450px; /* 给主内容留出右侧空间 */
+  position: relative; /* 保持主内容相对布局 */
+}
+
+.mainContent {
+  padding: 20px;
+}
+
+.err {
+  color: red;
+}
+.commentContent {
+  overflow-wrap: break-word; /* 保证文本在必要时换行 */
+  white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+}
+.post {
+  border: 2px solid #5f5f5f;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 8px #f5f5f5;
+  cursor: auto;
+}
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #ffffff;
+  font-size: 13px;
+}
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* 用户名和头像之间的间距 */
+  text-align: justify;
+}
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; /* 圆形头像 */
+  object-fit: cover; /* 裁剪图片以适应容器 */
+  background-color: #fffefe; /* 透明 */
+}
+
+.postTime {
+  font-size: 12px;
+  color: #c8c8c8;
+}
+.userName {
+  font-weight: bold;
+  color: black;
+}
+.forwardPostContent {
+  color: #ffffff;
+  font-size: 16px;
+  margin: 16px 16px 16px 16px;
+  text-align: justify;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-height: 1.5; /* 设置行高 */
+  overflow-wrap: break-word; /* 保证文本在必要时换行 */
+  white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+}
+.icon {
+  cursor: default;
+  margin-left: 8px;
+  opacity: 0.5;
+  font-size: 12px;
+  color: rgb(83, 83, 83);
+}
+.iconText {
+  display: inline-block;
+  margin-left: 4px;
+  transform: translateY(-2px);
+}

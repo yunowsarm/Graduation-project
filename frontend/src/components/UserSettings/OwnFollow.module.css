@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #121212; /* 深色背景 */
+}
+
+.userCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 15px;
+  background-color: #1e1e1e; /* 轻微提升亮度，突出卡片 */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background:#fff;
+  border: 2px solid #444; /* 细微的边框让头像更立体 */
+  object-fit: cover; /* 裁剪图片以适应容器 */
+}
+
+.username {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.email {
+  font-size: 14px;
+  color: #b0b0b0;
+}
+
+.buttonGroup {
+  display: flex;
+  align-items: center;
+}
+
+.button {
+  padding: 6px 12px;
+  background-color: #808080; /* 亮色按钮 */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease-in-out;
+}
+
+.button:hover {
+  background-color: #ababab;
+}
