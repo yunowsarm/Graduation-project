@@ -6,7 +6,6 @@ import NormalPost from "./normalPost_forwardPost/NormalPost";
 function Post({ posts, isLoading, fetchPosts }) {
   const [previewImageIndex, setPreviewImageIndex] = useState(null);
   const [currentPost, setCurrentPost] = useState(null);
-
   // useEffect(() => {
   //   // 恢复滚动位置
   //   const savedPosition = sessionStorage.getItem("scrollPosition");

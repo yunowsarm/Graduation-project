@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import styles from "./ForwardModal.module.css";
+import { ThemeContext } from "../../context/ThemeContext";
 function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
   const [content, setContent] = useState("");
   const [isPostExpanded, setIsPostExpanded] = useState(false); // 是否展开内容
@@ -10,7 +11,7 @@ function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
   const originalPostContentRef = useRef(null);
   const [isOriginalPostOverflowing, setIsOriginalPostOverflowing] =
     useState(false);
-
+  const { theme } = useContext(ThemeContext);
   useEffect(() => {
     if (show) {
       setIsPostExpanded(false);
@@ -62,9 +63,12 @@ function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
   return (
     <>
       {show && (
-        <div className={styles.modalOverlay}>
+        <div
+          className={
+            theme === "dark" ? styles.modalOverlay : styles.modalOverlayLight
+          }
+        >
           <div className={styles.modalContent}>
-            <h3>转发帖子</h3>
             <textarea
               className={styles.input}
               placeholder="添加转发内容..."
@@ -74,7 +78,13 @@ function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
             <div className={styles.originalPost}>
               {post.isForwarded ? (
                 <>
-                  <div className={styles.forwardPost}>
+                  <div
+                    className={
+                      theme === "dark"
+                        ? styles.forwardPost
+                        : styles.forwardPostLight
+                    }
+                  >
                     {/* 转发后的帖子信息 */}
                     {/* 转发后帖子的postHeader  */}
                     <div className={styles.forwardPostHeader}>
@@ -89,7 +99,13 @@ function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
                         </strong>
                       </div>
                       {/* 转发后帖子的postTime */}
-                      <span className={styles.forwardPostTime}>
+                      <span
+                        className={
+                          theme === "dark"
+                            ? styles.forwardPostTime
+                            : styles.forwardPostTimeLight
+                        }
+                      >
                         {formatDate(post.createdAt)}
                       </span>
                     </div>
@@ -116,7 +132,11 @@ function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
                       )}
                     </div>
                     {/* 原始帖子的信息 */}
-                    <div className={styles.post}>
+                    <div
+                      className={
+                        theme === "dark" ? styles.post : styles.postLight
+                      }
+                    >
                       {/* 原始帖子的postHeader */}
                       <div className={styles.postHeader}>
                         {/* 原始帖子的userInfo */}
@@ -130,7 +150,13 @@ function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
                           </strong>
                         </div>
                         {/* 原始帖子的postTime */}
-                        <span className={styles.postTime}>
+                        <span
+                          className={
+                            theme === "dark"
+                              ? styles.postTime
+                              : styles.postTimeLight
+                          }
+                        >
                           {formatDate(post.originalPostCreatedAt)}
                         </span>
                       </div>
@@ -182,14 +208,24 @@ function ForwardModal({ show, onClose, post, onForward, fetchPosts }) {
                 </>
               ) : (
                 <>
-                  <div className={styles.post}>
+                  <div
+                    className={
+                      theme === "dark" ? styles.post : styles.postLight
+                    }
+                  >
                     {/* postHeader包含头像名字和创建日期 */}
                     <div className={styles.postHeader}>
                       <div className={styles.userInfo}>
                         <img src={post.avatar} className={styles.avatar} />
                         <strong className={styles.userName}>{post.name}</strong>
                       </div>
-                      <span className={styles.postTime}>
+                      <span
+                        className={
+                          theme === "dark"
+                            ? styles.postTime
+                            : styles.postTimeLight
+                        }
+                      >
                         {formatDate(post.createdAt)}
                       </span>
                     </div>

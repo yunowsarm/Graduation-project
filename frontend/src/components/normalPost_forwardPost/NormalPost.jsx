@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import styles from "./NormalPost.module.css";
 import ActionBar from "../ActionBar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // 引入 useNavigate
 import UserCard from "../UserCard/UserCard";
+import { ThemeContext } from "../../context/ThemeContext";
 function NormalPost({
   post,
   handleContextMenu,
@@ -19,6 +20,7 @@ function NormalPost({
   const [isTooltipLocked, setIsTooltipLocked] = useState(false);
   const postContentRef = useRef(null);
   const navigate = useNavigate(); // 使用 useNavigate 进行路由导航
+  const { theme } = useContext(ThemeContext);
   const togglePostExpand = (e) => {
     e.stopPropagation(); // 阻止冒泡，防止触发父级事件
     setIsPostExpanded(!isPostExpanded);
@@ -96,7 +98,7 @@ function NormalPost({
 
   return (
     <div
-      className={styles.post}
+      className={theme === "dark" ? styles.post : styles.postLight}
       onContextMenu={handleContextMenu} // 局部禁用右键
       onMouseUp={(e) => {
         // 判断是否点击了按钮，避免触发父级事件
@@ -131,7 +133,11 @@ function NormalPost({
             </div>
           )}
         </div>
-        <span className={styles.postTime}>{formatDate(post.createdAt)}</span>
+        <span
+          className={theme === "dark" ? styles.postTime : styles.postTimeLight}
+        >
+          {formatDate(post.createdAt)}
+        </span>
       </div>
       {/* 内容区域 */}
       <div>

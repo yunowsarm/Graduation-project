@@ -1,14 +1,17 @@
 import SideBarstyles from "./SideBar.module.css";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { notificationSocket } from "./socket.io/socket";
-import { chatSocket } from "./socket.io/socket";
+import ThemeToggle from "./ThemeToggle";
+import { ThemeContext } from "../context/ThemeContext";
+// import { chatSocket } from "./socket.io/socket";
 
 function SideBar() {
   const location = useLocation();
   const [userData, setUserData] = useState({});
   const [unreadCount, setUnreadCount] = useState(0);
+  const { theme } = useContext(ThemeContext);
   const fetchUser = async () => {
     try {
       const response = await axios.get("http://localhost:3001/user/me", {
@@ -85,7 +88,11 @@ function SideBar() {
   // });
 
   return (
-    <div className={SideBarstyles.sidebar}>
+    <div
+      className={
+        theme === "dark" ? SideBarstyles.sidebar : SideBarstyles.sidebarLight
+      }
+    >
       <nav>
         <ul>
           <li>
@@ -165,12 +172,15 @@ function SideBar() {
           </li>
         </ul>
       </nav>
-      <div className={SideBarstyles.profile}>
-        <p>
-          {userData.username}
-          <br />
-          {userData.email}
-        </p>
+      <div className={SideBarstyles.bottomSection}>
+        <ThemeToggle />
+        <div className={SideBarstyles.profile}>
+          <p>
+            {userData.username}
+            <br />
+            {userData.email}
+          </p>
+        </div>
       </div>
     </div>
   );

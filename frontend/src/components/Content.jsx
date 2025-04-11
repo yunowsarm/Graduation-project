@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import styles from "./Content.module.css";
 import Textarea from "./Textarea";
 import Post from "./Post";
 import axios from "axios";
-
+import { ThemeContext } from "../context/ThemeContext";
 function Content() {
   const [posts, setPosts] = useState([]); // 用于存储后端返回的数据
   const [isLoading, setIsLoading] = useState(true); // 用于控制加载状态
@@ -13,7 +13,7 @@ function Content() {
   // const [isButtonVisible, setIsButtonVisible] = useState(false); // 控制按钮显示
   const outerLayerRef = useRef(null);
   const [isButtonVisible, setIsButtonVisible] = useState(false);
-
+  const { theme } = useContext(ThemeContext);
   useEffect(() => {
     const position = sessionStorage.getItem("scrollPosition");
     if (position) {
@@ -88,13 +88,16 @@ function Content() {
   }, []);
 
   return (
-    <div className={styles.content} ref={outerLayerRef}>
+    <div
+      className={theme === "dark" ? styles.content : styles.contentLight}
+      ref={outerLayerRef}
+    >
       <Textarea
         fetchPosts={fetchPosts}
         setIsLoading={setIsLoading}
         outerLayerRef={outerLayerRef}
       />
-      <Post posts={posts} isLoading={isLoading}  fetchPosts={fetchPosts}/>
+      <Post posts={posts} isLoading={isLoading} fetchPosts={fetchPosts} />
       {/* 返回顶部按钮 */}
       {isButtonVisible && (
         <button

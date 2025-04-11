@@ -21,10 +21,25 @@
   background-color: #1da1f2;
   color: #fff;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.postButtonLight {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: #73c9ff;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .postButton:hover {
   background-color: #0d8de1;
+}
+
+.postButtonLight:hover {
+  background-color: #4bb6fe;
 }
 
 .toolbar {
@@ -57,6 +72,22 @@
   transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
+.iconButtonLight {
+  width: 35px;
+  height: 35px;
+  margin: 12px;
+  background-color: transparent;
+  color: #000;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 25%;
+  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+
 .imageButton:hover {
   color: #00aaff; /* 悬浮时图片按钮的颜色 */
   transform: scale(1.1);
@@ -71,43 +102,21 @@
   font-size: 20px;
 }
 
-.postButton {
-  background-color: #1da1f2;
-  border: none;
-  color: #fff;
-  border-radius: 20px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
+.iconButtonLight i {
+  font-size: 20px;
 }
 
-.postButton:hover {
-  background-color: #0d8de1;
-}
 
-.postButton:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-.postButton {
-  background-color: #1d72b8;
-  border: none;
-  color: #fff;
-  border-radius: 20px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease-in-out;
-}
-
-.postButton:hover {
-  background-color: #145b8d;
-}
 
 .postButton:disabled {
   background-color: #0f4b75; /* 灰色背景 */
   color: #c5c3c3;
+  cursor: not-allowed; /* 显示禁用指针 */
+}
+
+.postButtonLight:disabled {
+  background-color: #c1c1c1; /* 灰色背景 */
+  color: #000000;
   cursor: not-allowed; /* 显示禁用指针 */
 }
 
@@ -119,6 +128,16 @@
   background-color: #222;
   font-size: 20px;
   color: #fff;
+  font-weight: bold;
+}
+
+.inputLight {
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #333;
+  background-color: #ffffff;
+  font-size: 20px;
   font-weight: bold;
 }
 
@@ -203,13 +222,12 @@
   font-size: 16px;
   opacity: 0;
   z-index: 1000; /* 确保在最上层 */
-  transition: opacity 0.5s ease-in-out 
+  transition: opacity 0.5s ease-in-out;
 }
 
 .toast.show {
   opacity: 1;
-  
 }
-.toast.hide{
+.toast.hide {
   opacity: 0;
 }

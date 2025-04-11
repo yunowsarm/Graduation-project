@@ -10,7 +10,7 @@
 
 .icon .iconColor {
   cursor: pointer;
-  transition: color 0.3s ease-in-out
+  transition: color 0.3s ease
 }
 
 .icon .iconColor:hover {
@@ -30,3 +30,31 @@
   color: red; /* 图标整体变红 */
 }
 
+/* 亮色主题 */
+.postInfoLight {
+  margin-top: 16px;
+  padding-top: 20px;
+  border-top: 1px solid #a2a2a2; /* 添加分隔线 */
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #000000;
+}
+
+.iconLight .iconColorLight {
+  cursor: pointer;
+  transition: color 0.3s ease
+}
+
+.iconLight .iconColorLight:hover {
+  color: #0091ff;
+}
+
+.iconLight span span{
+  position: relative;
+  top: -2px
+}
+
+.iconLight i {
+  transition: color 0.3s ease, transform 0.2s ease; /* 平滑颜色变化和缩放效果 */
+}

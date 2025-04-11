@@ -1,13 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios";
 import styles from "./DrawApp.module.css";
-
+import { ThemeContext } from "../../context/ThemeContext";
 function DrawApp() {
   const [input, setInput] = useState("");
   const [chatLog, setChatLog] = useState([]);
   const [loading, setLoading] = useState(false);
   const chatWindowRef = useRef(null);
-
+  const { theme } = useContext(ThemeContext);
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
@@ -82,9 +82,18 @@ function DrawApp() {
   };
 
   return (
-    <div className={styles.chatContainer}>
-      <h2 className={styles.header}>AI 绘画助手</h2>
-      <div className={styles.chatWindow} ref={chatWindowRef}>
+    <div
+      className={
+        theme === "dark" ? styles.chatContainer : styles.chatContainerLight
+      }
+    >
+      <h2 className={styles.header}>绘画助手</h2>
+      <div
+        className={
+          theme === "dark" ? styles.chatWindow : styles.chatWindowLight
+        }
+        ref={chatWindowRef}
+      >
         {chatLog.map((msg, index) => {
           const userPrompt =
             chatLog
@@ -97,7 +106,13 @@ function DrawApp() {
               <div
                 key={index}
                 className={`${styles.message} ${
-                  msg.role === "assistant" ? styles.assistant : styles.user
+                  msg.role === "assistant"
+                    ? theme === "dark"
+                      ? styles.assistant
+                      : styles.assistantLight
+                    : theme === "dark"
+                    ? styles.user
+                    : styles.userLight
                 }`}
                 style={{ whiteSpace: "pre-wrap" }}
               >
@@ -133,10 +148,14 @@ function DrawApp() {
           placeholder="请输入提示词(例如：小猫，阳台...)"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className={styles.input}
+          className={theme === "dark" ? styles.input : styles.inputLight}
           disabled={loading}
         />
-        <button type="submit" className={styles.button} disabled={loading}>
+        <button
+          type="submit"
+          className={theme === "dark" ? styles.button : styles.buttonLight}
+          disabled={loading}
+        >
           {loading ? "发送中..." : "发送"}
         </button>
       </form>

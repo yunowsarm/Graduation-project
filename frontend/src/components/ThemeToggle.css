@@ -1,0 +1,44 @@
+/* 主题切换按钮外框 */
+.toggle-container {
+    width: 50px;
+    height: 24px;
+    background-color: #ddd;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    padding: 2px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* 滑动按钮（太阳 / 月亮） */
+  .toggle-slider {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 2px;
+    transition: all 0.3s ease;
+  }
+  
+  /* 暗色模式时按钮滑到右边 */
+  .dark-mode {
+    left: 26px;
+  }
+  
+  /* 太阳 & 月亮图标 */
+  .icon {
+    font-size: 16px;
+    color: #f39c12;
+    transition: color 0.3s ease;
+  }
+  
+  .moon {
+    color: #3498db; /* 深色模式下的月亮颜色 */
+  }
+  

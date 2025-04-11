@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import styles from "./PostDetail.module.css";
 import ImagePreviewModal from "./ImagePreviewModal";
 import ActionBar from "./ActionBar";
 import { useParams, useNavigate } from "react-router-dom";
 import UserCard from "../components/UserCard/UserCard";
+import { ThemeContext } from "../context/ThemeContext";
 function PostDetail() {
   const [comments, setComments] = useState([]); // 评论列表
   const [newComment, setNewComment] = useState(""); // 新评论内容
@@ -43,6 +44,7 @@ function PostDetail() {
   const navigate = useNavigate();
 
   const { postId } = useParams();
+  const { theme } = useContext(ThemeContext);
   const showTooltip = () => {
     setIsTooltipVisible(true);
   };
@@ -275,21 +277,42 @@ function PostDetail() {
     }, 100); // 延迟以确保 DOM 已渲染完成
   }, []);
   return (
-    <div className={styles.detailContainer} ref={scrollContainerRef}>
-      <span className={styles.backButton} onClick={handleBack}>
+    <div
+      className={
+        theme === "dark" ? styles.detailContainer : styles.detailContainerLight
+      }
+      ref={scrollContainerRef}
+    >
+      <span
+        className={
+          theme === "dark" ? styles.backButton : styles.backButtonLight
+        }
+        onClick={handleBack}
+      >
         <i className="fi fi-sr-left"></i>
       </span>
       {post.isForwarded ? (
         <div className={styles.forwardPost}>
           {/* 转发后帖子*/}
-          <div className={styles.forwardPostHeader}>
+          <div
+            className={
+              theme === "dark"
+                ? styles.forwardPostHeader
+                : styles.forwardPostHeaderLight
+            }
+          >
             {/* 转发后帖子的userInfo */}
             <div
               className={styles.forwardUserInfo}
               onMouseEnter={showTooltip}
               onMouseLeave={hideTooltip}
             >
-              <img src={post.avatar} className={styles.avatar} />
+              <img
+                src={post.avatar}
+                className={
+                  theme === "dark" ? styles.avatar : styles.avatarLight
+                }
+              />
               <strong className={styles.userName}>{post.name}</strong>
               {isTooltipVisible && (
                 <div
@@ -307,7 +330,13 @@ function PostDetail() {
               )}
             </div>
             {/* 转发后帖子的postTime */}
-            <span className={styles.forwardPostTime}>
+            <span
+              className={
+                theme === "dark"
+                  ? styles.forwardPostTime
+                  : styles.forwardPostTimeLight
+              }
+            >
               {formatDate(post.createdAt)}
             </span>
           </div>
@@ -317,9 +346,11 @@ function PostDetail() {
             <p
               ref={postContentRef}
               style={{ whiteSpace: "pre-line" }}
-              className={`${styles.forwardPostContent} ${
-                isPostExpanded ? styles.expanded : styles.clamped
-              }`}
+              className={`${
+                theme === "dark"
+                  ? styles.forwardPostContent
+                  : styles.forwardPostContentLight
+              } ${isPostExpanded ? styles.expanded : styles.clamped}`}
             >
               {post.content}
             </p>
@@ -336,13 +367,22 @@ function PostDetail() {
 
           {/* 原始帖子*/}
           <div className={styles.post}>
-            <div className={styles.postHeader}>
+            <div
+              className={
+                theme === "dark" ? styles.postHeader : styles.postHeaderLight
+              }
+            >
               <div
                 className={styles.userInfo}
                 onMouseEnter={showOriginalTooltip}
                 onMouseLeave={hideOriginalTooltip}
               >
-                <img src={post.originalPostAvatar} className={styles.avatar} />
+                <img
+                  src={post.originalPostAvatar}
+                  className={
+                    theme === "dark" ? styles.avatar : styles.avatarLight
+                  }
+                />
                 <strong className={styles.userName}>
                   {post.originalPostName}
                 </strong>
@@ -362,7 +402,11 @@ function PostDetail() {
                 )}
               </div>
               {/* 原始帖子的postTime */}
-              <span className={styles.postTime}>
+              <span
+                className={
+                  theme === "dark" ? styles.postTime : styles.postTimeLight
+                }
+              >
                 {formatDate(post.originalPostCreatedAt)}
               </span>
             </div>
@@ -372,7 +416,11 @@ function PostDetail() {
               <p
                 ref={originalPostContentRef}
                 style={{ whiteSpace: "pre-line" }}
-                className={`${styles.postContent} ${
+                className={`${
+                  theme === "dark"
+                    ? styles.forwardPostContent
+                    : styles.forwardPostContentLight
+                } ${
                   isOriginalPostExpanded
                     ? styles.expanded
                     : styles.originalPostClamped
@@ -381,7 +429,15 @@ function PostDetail() {
                 {post.originalPostContent || (
                   <>
                     <i className="fi fi-rr-paper-plane"></i>
-                    <span className={styles.unContent}>未编写内容</span>
+                    <span
+                      className={
+                        theme === "dark"
+                          ? styles.unContent
+                          : styles.unContentLight
+                      }
+                    >
+                      未编写内容
+                    </span>
                   </>
                 )}
               </p>
@@ -413,13 +469,24 @@ function PostDetail() {
           {depth > 1 && (
             <>
               <div className={styles.post}>
-                <div className={styles.postHeader}>
+                <div
+                  className={
+                    theme === "dark"
+                      ? styles.postHeader
+                      : styles.postHeaderLight
+                  }
+                >
                   <div
                     className={styles.userInfo}
                     onMouseEnter={showDeepTooltip}
                     onMouseLeave={hideDeepTooltip}
                   >
-                    <img src={originalUser.avatar} className={styles.avatar} />
+                    <img
+                      src={originalUser.avatar}
+                      className={
+                        theme === "dark" ? styles.avatar : styles.avatarLight
+                      }
+                    />
                     <strong className={styles.userName}>
                       {originalUser.username}
                     </strong>
@@ -439,7 +506,11 @@ function PostDetail() {
                     )}
                   </div>
                   {/* 原始帖子的postTime */}
-                  <span className={styles.postTime}>
+                  <span
+                    className={
+                      theme === "dark" ? styles.postTime : styles.postTimeLight
+                    }
+                  >
                     {formatDate(originalUser.createdAt)}
                   </span>
                 </div>
@@ -448,7 +519,11 @@ function PostDetail() {
                   <p
                     ref={deepPostContentRef}
                     style={{ whiteSpace: "pre-line" }}
-                    className={`${styles.forwardPostContent} ${
+                    className={`${
+                      theme === "dark"
+                        ? styles.forwardPostContent
+                        : styles.forwardPostContentLight
+                    } ${
                       isDeepPostExpanded
                         ? styles.expanded
                         : styles.deepPostClamped
@@ -488,7 +563,11 @@ function PostDetail() {
         </div>
       ) : (
         <div className={styles.post}>
-          <div className={styles.postHeader}>
+          <div
+            className={
+              theme === "dark" ? styles.postHeader : styles.postHeaderLight
+            }
+          >
             <div
               className={styles.userInfo}
               onMouseEnter={showTooltip}
@@ -497,7 +576,9 @@ function PostDetail() {
               <img
                 src={post.avatar}
                 alt={`${post.name}的头像`}
-                className={styles.avatar}
+                className={
+                  theme === "dark" ? styles.avatar : styles.avatarLight
+                }
               />
               <strong className={styles.userName}>{post.name}</strong>
               {isTooltipVisible && (
@@ -515,7 +596,11 @@ function PostDetail() {
                 </div>
               )}
             </div>
-            <span className={styles.postTime}>
+            <span
+              className={
+                theme === "dark" ? styles.postTime : styles.postTimeLight
+              }
+            >
               {formatDate(post.createdAt)}
             </span>
           </div>
@@ -523,9 +608,9 @@ function PostDetail() {
           <p
             ref={postContentRef}
             style={{ whiteSpace: "pre-line" }}
-            className={`${styles.postContent} ${
-              isPostExpanded ? styles.expanded : styles.clamped
-            }`}
+            className={`${
+              theme === "dark" ? styles.postContent : styles.postContentLight
+            } ${isPostExpanded ? styles.expanded : styles.clamped}`}
           >
             {post.content}
           </p>
@@ -587,7 +672,13 @@ function PostDetail() {
                       alt={`${comment.author.username}的头像`}
                       className={styles.commentAvatar}
                     />
-                    <strong className={styles.commentUsername}>
+                    <strong
+                      className={
+                        theme === "dark"
+                          ? styles.commentUsername
+                          : styles.commentUsernameLight
+                      }
+                    >
                       {comment.authorInfo.username}
                     </strong>
                     {hoveredIndex === index && (
@@ -612,7 +703,13 @@ function PostDetail() {
                 >
                   {comment.content}
                 </p>
-                <span className={styles.commentTime}>
+                <span
+                  className={
+                    theme === "dark"
+                      ? styles.commentTime
+                      : styles.commentTimeLight
+                  }
+                >
                   {new Date(comment.createdAt).toLocaleString()}
                 </span>
               </div>

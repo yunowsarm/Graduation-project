@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import styles from "./ChatApp.module.css";
-
+import { ThemeContext } from "../../context/ThemeContext";
 function ChatApp() {
   const [input, setInput] = useState("");
   const [chatLog, setChatLog] = useState([]);
   const [loading, setLoading] = useState(false);
   const chatWindowRef = useRef(null);
-
+  const { theme } = useContext(ThemeContext);
   useEffect(() => {
     if (chatWindowRef.current) {
       // 让滚动条始终滚动到底部
@@ -78,14 +78,29 @@ function ChatApp() {
   };
 
   return (
-    <div className={styles.chatContainer}>
-      <h2 className={styles.header}>AI 文案助手</h2>
-      <div className={styles.chatWindow} ref={chatWindowRef}>
+    <div
+      className={
+        theme === "dark" ? styles.chatContainer : styles.chatContainerLight
+      }
+    >
+      <h2 className={styles.header}>文案助手</h2>
+      <div
+        className={
+          theme === "dark" ? styles.chatWindow : styles.chatWindowLight
+        }
+        ref={chatWindowRef}
+      >
         {chatLog.map((msg, index) => (
           <div
             key={index}
             className={`${styles.message} ${
-              msg.role === "assistant" ? styles.assistant : styles.user
+              msg.role === "assistant"
+                ? theme === "dark"
+                  ? styles.assistant
+                  : styles.assistantLight
+                : theme === "dark"
+                ? styles.user
+                : styles.userLight
             }`}
             // 为了让换行符生效
             style={{ whiteSpace: "pre-wrap" }}
@@ -100,10 +115,14 @@ function ChatApp() {
           placeholder="请输入消息..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className={styles.input}
+          className={theme === "dark" ? styles.input : styles.inputLight}
           disabled={loading}
         />
-        <button type="submit" className={styles.button} disabled={loading}>
+        <button
+          type="submit"
+          className={theme === "dark" ? styles.button : styles.buttonLight}
+          disabled={loading}
+        >
           {loading ? "发送中..." : "发送"}
         </button>
       </form>

@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import styles from "./ActionBar.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import axios from "axios";
 import ForwardModal from "./normalPost_forwardPost/ForwardModal";
+import { ThemeContext } from "../context/ThemeContext";
 function ActionBar({ post, updateComments, fetchPosts }) {
   const [comments, setComments] = useState([]);
   const [viewNum, setViewNum] = useState(post.viewNum);
@@ -10,6 +11,7 @@ function ActionBar({ post, updateComments, fetchPosts }) {
   const [liked, setLiked] = useState(null); // 维护点赞状态
   const [forwardNum, setForwardNum] = useState(post.forwardNum);
   const [showForwardModal, setShowForwardModal] = useState(false);
+  const { theme } = useContext(ThemeContext);
   // const [originalPostUser, setOriginalPostUser] = useState({});
 
   useEffect(() => {
@@ -163,24 +165,24 @@ function ActionBar({ post, updateComments, fetchPosts }) {
 
   return (
     <>
-      <div className={styles.postInfo}>
-        <div className={styles.icon} title="评论">
-          <span className={styles.iconColor}>
+      <div className={theme === "dark" ? styles.postInfo : styles.postInfoLight}>
+      <div className={theme === "dark" ? styles.icon : styles.iconLight} title="评论">
+          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
             <i className="fi fi-br-comment-alt"></i>{" "}
             <span>{comments.length}</span>
           </span>
         </div>
-        <div className={styles.icon} title="转发" onClick={handleForwardClick}>
-          <span className={styles.iconColor}>
+        <div className={theme === "dark" ? styles.icon : styles.iconLight} title="转发" onClick={handleForwardClick}>
+          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
             <i className="fi fi-br-paper-plane"></i> <span>{forwardNum}</span>
           </span>
         </div>
         <div
-          className={styles.icon} // 根据点赞状态设置样式
+          className={theme === "dark" ? styles.icon : styles.iconLight} // 根据点赞状态设置样式
           title="点赞"
           onClick={handleLikeClick} // 添加点击事件
         >
-          <span className={styles.iconColor}>
+          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
             <i
               className={`${
                 liked ? `fi fi-sr-heart ${styles.liked}` : "fi fi-br-heart"
@@ -189,8 +191,8 @@ function ActionBar({ post, updateComments, fetchPosts }) {
             <span>{likeNum}</span>
           </span>
         </div>
-        <div className={styles.icon} title="查看">
-          <span className={styles.iconColor}>
+        <div className={theme === "dark" ? styles.icon : styles.iconLight} title="查看">
+          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
             <i className="fi fi-br-overview"></i> <span>{viewNum}</span>
           </span>
         </div>

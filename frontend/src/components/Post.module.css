@@ -1,7 +1,11 @@
 .loading {
   text-align: center;
   margin-top: 20px;
-  color: #b0b0b0;
+  color: #d3d3d3;
 }
 
-
+.loadingLight {
+  text-align: center;
+  margin-top: 20px;
+  color: #222222;
+}

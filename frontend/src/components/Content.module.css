@@ -1,15 +1,25 @@
-.content {
+.content,
+.contentLight {
   padding: 2%;
   flex: 1;
-  background-color: #000;
-  color: #fff;
   height: 100vh;
   overflow-y: scroll; /* 保持滚动功能 */
   border-radius: 3%;
-  /* 隐藏滚动条 */
+  transition: color 0.3s ease, color 0.3s ease; /* 添加过渡效果 */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
 }
+
+.contentLight {
+  background-color: #fff; /* 相反色：#fff */
+  color: #000; /* 相反色：#000 */
+}
+
+.content {
+  background-color: #000; /* 相反色：#000 */
+  color: #fff; /* 相反色：#fff */
+}
+
 .content::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
@@ -30,7 +40,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   z-index: 1000;
-  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .scrollToTopButton:hover {
@@ -43,3 +53,4 @@
   margin-top: 50%;
   transform: translateY(-30%);
 }
+

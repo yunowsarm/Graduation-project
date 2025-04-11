@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import styles from "./ForwardPost.module.css";
 import ActionBar from "../ActionBar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom"; // 引入 useNavigate
 import axios from "axios";
 import UserCard from "../UserCard/UserCard";
+import { ThemeContext } from "../../context/ThemeContext";
 function ForwardPost({
   post,
   handleContextMenu,
@@ -34,6 +35,8 @@ function ForwardPost({
 
   const navigate = useNavigate(); // 使用 useNavigate 进行路由导航
 
+  const { theme } = useContext(ThemeContext);
+
   useEffect(() => {
     setTimeout(() => {
       if (postContentRef.current) {
@@ -54,8 +57,6 @@ function ForwardPost({
       }
     }, 0); // 延迟以确保 DOM 已渲染完成
   }, []);
-
-  
 
   const handlePostClick = (e, post) => {
     // 如果是右键单击，直接返回
@@ -139,7 +140,9 @@ function ForwardPost({
   };
   return (
     <div
-      className={styles.forwardPost}
+      className={
+        theme === "dark" ? styles.forwardPost : styles.forwardPostLight
+      }
       onContextMenu={handleContextMenu} // 局部禁用右键
       onMouseUp={(e) => {
         // 判断是否点击了按钮，避免触发父级事件
@@ -177,7 +180,13 @@ function ForwardPost({
           )}
         </div>
         {/* 转发后帖子的postTime */}
-        <span className={styles.forwardPostTime}>
+        <span
+          className={
+            theme === "dark"
+              ? styles.forwardPostTime
+              : styles.forwardPostTimeLight
+          }
+        >
           {formatDate(post.createdAt)}
         </span>
       </div>
@@ -208,7 +217,7 @@ function ForwardPost({
       </div>
 
       {/* 原始帖子的信息 */}
-      <div className={styles.post}>
+      <div className={theme === "dark" ? styles.post : styles.postLight}>
         {/* 原始帖子的postHeader */}
         <div className={styles.postHeader}>
           {/* 原始帖子的userInfo */}
@@ -237,7 +246,13 @@ function ForwardPost({
             )}
           </div>
           {/* 原始帖子的postTime */}
-          <span className={styles.postTime}>{formatDate(post.createdAt)}</span>
+          <span
+            className={
+              theme === "dark" ? styles.postTime : styles.postTimeLight
+            }
+          >
+            {formatDate(post.createdAt)}
+          </span>
         </div>
         {/* 原始帖子内容 */}
         <div>

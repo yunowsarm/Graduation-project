@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import styles from "./Textarea.module.css";
 import Emoji from "./Emoji";
 import axios from "axios";
+import { ThemeContext } from "../context/ThemeContext";
 
-function Textarea({ fetchPosts, setIsLoading ,outerLayerRef}) {
+function Textarea({ fetchPosts, setIsLoading, outerLayerRef }) {
   const [imgclass, setImgClass] = useState("fi fi-rr-add-image");
   const [emojiclass, setEmojiClass] = useState("fi fi-rr-laugh-squint");
   const [inputValue, setInputValue] = useState(""); // 存储输入框内容
@@ -22,6 +23,7 @@ function Textarea({ fetchPosts, setIsLoading ,outerLayerRef}) {
   const [toastMessage, setToastMessage] = useState(""); // 用于存储提示信息
   const toastTimeoutRef = useRef(null); // 初始化为 null，用来保存定时器 ID
   const [showToast, setShowToast] = useState(false);
+  const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
     if (!showEmojiPicker) return;
@@ -170,7 +172,9 @@ function Textarea({ fetchPosts, setIsLoading ,outerLayerRef}) {
         <textarea
           ref={textareaRef}
           placeholder="有什么新鲜事？!"
-          className={`${styles.input} ${styles.hiddenScrollbar}`}
+          className={`${theme === "dark" ? styles.input : styles.inputLight} ${
+            styles.hiddenScrollbar
+          }`}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           rows={1}
@@ -203,7 +207,9 @@ function Textarea({ fetchPosts, setIsLoading ,outerLayerRef}) {
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
           <button
-            className={`${styles.iconButton} ${styles.imageButton}`}
+            className={`${
+              theme === "dark" ? styles.iconButton : styles.iconButtonLight
+            } ${styles.imageButton}`}
             onMouseEnter={() => handleMouse("img", "fi fi-br-add-image")}
             onMouseLeave={() => handleMouse("img", "fi fi-rr-add-image")}
             onClick={() => handleImageUpload()}
@@ -222,7 +228,9 @@ function Textarea({ fetchPosts, setIsLoading ,outerLayerRef}) {
 
           <button
             ref={emojiButtonRef}
-            className={`${styles.iconButton} ${styles.emojiButton}`}
+            className={`${
+              theme === "dark" ? styles.iconButton : styles.iconButtonLight
+            } ${styles.emojiButton}`}
             onClick={toggleEmojiPicker}
             onMouseEnter={() => handleMouse("emoji", "fi fi-br-laugh-squint")}
             onMouseLeave={() => handleMouse("emoji", "fi fi-rr-laugh-squint")}
@@ -232,7 +240,9 @@ function Textarea({ fetchPosts, setIsLoading ,outerLayerRef}) {
         </div>
         <div className={styles.toolbarRight}>
           <button
-            className={styles.postButton}
+            className={
+              theme === "dark" ? styles.postButton : styles.postButtonLight
+            }
             onClick={handlePost}
             disabled={!inputValue && !files.length}
           >

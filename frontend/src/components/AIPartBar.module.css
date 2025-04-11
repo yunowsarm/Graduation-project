@@ -8,6 +8,19 @@
   overflow-y: scroll;
   scrollbar-width: none; /* 适用于 Firefox */
   -ms-overflow-style: none;  /* 适用于 Internet Explorer 和 Edge */
-  border: solid 5px #333;
+  border: solid 3px #333;
+  margin-left: 1%;
+}
+
+.recommendationsLight {
+  background-color: #ffffff;
+  color: #000000;
+  height: 100vh;
+  position: relative;
+  flex-shrink: 0;
+  overflow-y: scroll;
+  scrollbar-width: none; /* 适用于 Firefox */
+  -ms-overflow-style: none;  /* 适用于 Internet Explorer 和 Edge */
+  border: solid 3px #c6c6c6;
   margin-left: 1%;
 }

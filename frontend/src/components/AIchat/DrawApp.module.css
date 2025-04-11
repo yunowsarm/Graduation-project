@@ -5,13 +5,22 @@
   border-top: 4px solid #333;
   padding: 10px;
   font-family: Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease; /* 添加过渡效果 */
+}
+
+.chatContainerLight {
+  width: 400px;
+  background-color: #ffffff;
+  color: #000000;
+  border-top: 4px solid #c5c5c5;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease; /* 添加过渡效果 */
 }
 
 .header {
   text-align: center;
-  border-bottom: 1px solid #333;
   padding-bottom: 10px;
-  margin-bottom: 10px;
   font-size: 16px;
 }
 
@@ -28,9 +37,22 @@
   -ms-overflow-style: none;
 }
 
+.chatWindowLight {
+  height: 300px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: 1px solid #c5c5c5;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 .message {
   margin: 8px 0;
-  padding:  2px 8px 2px 8px;
+  padding: 2px 8px 2px 8px;
   border-radius: 4px;
   max-width: 70%;
   word-wrap: break-word;
@@ -42,11 +64,24 @@
   align-self: flex-end;
 }
 
+.userLight {
+  background-color: #eeeeee;
+  color: #252525;
+  align-self: flex-end;
+}
+
 .assistant {
   background-color: #444;
   color: #ffffff;
   align-self: flex-start;
 }
+
+.assistantLight {
+  background-color: #eeeeee;
+  color: #252525;
+  align-self: flex-start;
+}
+
 
 .inputArea {
   display: flex;
@@ -61,6 +96,15 @@
   outline: none;
 }
 
+.inputLight {
+  flex: 1;
+  padding: 8px;
+  background-color: #d8d8d8;
+  color: #000000;
+  border: 1px solid #bababa;
+  outline: none;
+}
+
 .button {
   padding: 8px 12px;
   margin-left: 5px;
@@ -69,6 +113,16 @@
   border: none;
   cursor: pointer;
 }
+
+.buttonLight {
+  padding: 8px 12px;
+  margin-left: 5px;
+  background-color: #d3d3d3;
+  color: #000000;
+  border: none;
+  cursor: pointer;
+}
+
 
 .imageContainer {
   position: relative;
@@ -81,7 +135,7 @@
   width: 50px;
   position: relative;
   left: 72%;
-  top:-12.5%;
+  top: -12.5%;
   font-size: 12px;
   padding: 5px 10px;
   background-color: #007bff;
@@ -89,7 +143,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: all  0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .downloadButton:hover {

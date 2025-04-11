@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useContext } from "react";
 import Homepage from "./pages/Homepage.jsx";
 import Explore from "./pages/Explore.jsx";
 import Notifications from "./pages/Notifications.jsx";
@@ -12,7 +13,10 @@ import SideBar from "./components/SideBar.jsx";
 import AIPartBar from "./components/AIPartBar.jsx";
 import styles from "./pages/TotalLayout.module.css";
 import SearchResults from "./pages/SearchResults.jsx";
+import { ThemeContext } from "./context/ThemeContext"; // 导入 ThemeProvider
+
 function App() {
+  const { theme } = useContext(ThemeContext);
   return (
     <BrowserRouter>
       <Routes>
@@ -22,7 +26,13 @@ function App() {
         <Route
           path="/*"
           element={
-            <div className={styles.pageContainer}>
+            <div
+              className={
+                theme === "dark"
+                  ? styles.pageContainer
+                  : styles.pageContainerLight
+              }
+            >
               <SideBar />
               <div className={styles.mainContainer}>
                 <Routes>
