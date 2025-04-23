@@ -1,11 +1,23 @@
 .ownPosts {
   padding: 20px;
-  background-color: #8e8e8e;
+  background-color: #1c1c1c;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 100%;
   overflow: hidden;
   position: relative;
+  color: #ececec;
+}
+
+.ownPostsLight {
+  padding: 20px;
+  background-color: #ececec;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  color: #000000;
 }
 
 .scrollable {
@@ -22,18 +34,51 @@
   margin: 20px 0;
 }
 
+.ownPostsLight p {
+  font-size: 16px;
+  color: #000000;
+  text-align: center;
+  margin: 20px 0;
+}
+
 .postItem {
-  background-color: #2b2b2b;
-  border: 1px solid #5a5a5a;
+  background-color: #1c1c1c;
+  border: 1px solid #2e2e2e;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+.postItem i {
+  float: right;
+  cursor: pointer;
+}
+
+.postItemLight {
+  background-color: #ececec;
+  border: 1px solid #bababa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(255, 255, 255, 0.1);
+}
+
+.postItemLight i {
+  float: right;
+  cursor: pointer;
+}
+
 .postItem p {
   font-size: 18px;
   color: #ffffff;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.postItemLight p {
+  font-size: 18px;
+  color: #000000;
   margin-bottom: 12px;
   text-align: left;
 }
@@ -49,6 +94,29 @@
   line-height: 1.5;
   overflow-wrap: break-word; /* 保证文本在必要时换行 */
   white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+}
+
+.postContent i {
+  cursor: pointer;
+  float: left;
+}
+
+.postContentLight {
+  color: #000000;
+  font-size: 16px;
+  margin: 16px 16px 16px 24px;
+  text-align: justify;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-height: 1.5;
+  overflow-wrap: break-word; /* 保证文本在必要时换行 */
+  white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+}
+
+.postContentLight i {
+  cursor: pointer;
+  float: left;
 }
 
 .imageGrid {

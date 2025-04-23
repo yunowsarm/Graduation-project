@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import styles from "./ActionBar.module.css";
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import ForwardModal from "./normalPost_forwardPost/ForwardModal";
 import { ThemeContext } from "../context/ThemeContext";
+import ConfirmModal from "./ConfirmModal/ConfirmModal";
 function ActionBar({ post, updateComments, fetchPosts }) {
   const [comments, setComments] = useState([]);
   const [viewNum, setViewNum] = useState(post.viewNum);
@@ -12,11 +13,26 @@ function ActionBar({ post, updateComments, fetchPosts }) {
   const [forwardNum, setForwardNum] = useState(post.forwardNum);
   const [showForwardModal, setShowForwardModal] = useState(false);
   const { theme } = useContext(ThemeContext);
+  const [user, setUser] = useState({});
+  const [showModal, setShowModal] = useState(false);
   // const [originalPostUser, setOriginalPostUser] = useState({});
-
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/user/me", {
+        withCredentials: true, // 确保发送 Cookie
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error("获取用户失败:", error);
+    }
+  };
   useEffect(() => {
     if (!post) return;
   }, [post]);
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   // 加载评论
   const loadComments = async () => {
@@ -78,6 +94,20 @@ function ActionBar({ post, updateComments, fetchPosts }) {
       console.error("加载喜欢数量或设置喜欢状态失败:", err);
     }
   };
+
+  const deletePost = async () => {
+    try {
+      await axios.delete(`http://localhost:3001/posts/delete/${post._id}`, {
+        withCredentials: true,
+      });
+      fetchPosts();
+    } catch (err) {
+      console.error("删除帖子失败:", err);
+    } finally {
+      setShowModal(true);
+    }
+  };
+
   //没必要存在这个函数
   // const handelLoadLike = () => {
   //   setLiked(() => !liked);
@@ -165,15 +195,32 @@ function ActionBar({ post, updateComments, fetchPosts }) {
 
   return (
     <>
-      <div className={theme === "dark" ? styles.postInfo : styles.postInfoLight}>
-      <div className={theme === "dark" ? styles.icon : styles.iconLight} title="评论">
-          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
+      <div
+        className={theme === "dark" ? styles.postInfo : styles.postInfoLight}
+      >
+        <div
+          className={theme === "dark" ? styles.icon : styles.iconLight}
+          title="评论"
+        >
+          <span
+            className={
+              theme === "dark" ? styles.iconColor : styles.iconColorLight
+            }
+          >
             <i className="fi fi-br-comment-alt"></i>{" "}
             <span>{comments.length}</span>
           </span>
         </div>
-        <div className={theme === "dark" ? styles.icon : styles.iconLight} title="转发" onClick={handleForwardClick}>
-          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
+        <div
+          className={theme === "dark" ? styles.icon : styles.iconLight}
+          title="转发"
+          onClick={handleForwardClick}
+        >
+          <span
+            className={
+              theme === "dark" ? styles.iconColor : styles.iconColorLight
+            }
+          >
             <i className="fi fi-br-paper-plane"></i> <span>{forwardNum}</span>
           </span>
         </div>
@@ -182,7 +229,11 @@ function ActionBar({ post, updateComments, fetchPosts }) {
           title="点赞"
           onClick={handleLikeClick} // 添加点击事件
         >
-          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
+          <span
+            className={
+              theme === "dark" ? styles.iconColor : styles.iconColorLight
+            }
+          >
             <i
               className={`${
                 liked ? `fi fi-sr-heart ${styles.liked}` : "fi fi-br-heart"
@@ -191,11 +242,34 @@ function ActionBar({ post, updateComments, fetchPosts }) {
             <span>{likeNum}</span>
           </span>
         </div>
-        <div className={theme === "dark" ? styles.icon : styles.iconLight} title="查看">
-          <span className={theme === "dark" ? styles.iconColor : styles.iconColorLight}>
+        <div
+          className={theme === "dark" ? styles.icon : styles.iconLight}
+          title="查看"
+        >
+          <span
+            className={
+              theme === "dark" ? styles.iconColor : styles.iconColorLight
+            }
+          >
             <i className="fi fi-br-overview"></i> <span>{viewNum}</span>
           </span>
         </div>
+
+        {user.role === "manager" && (
+          <div
+            className={theme === "dark" ? styles.icon : styles.iconLight}
+            title="删除"
+            onClick={() => setShowModal(true)}
+          >
+            <span
+              className={
+                theme === "dark" ? styles.iconColor : styles.iconColorLight
+              }
+            >
+              <i className="fi fi-br-trash"></i>
+            </span>
+          </div>
+        )}
       </div>
       {/* 转发模态框 */}
       <ForwardModal
@@ -204,6 +278,12 @@ function ActionBar({ post, updateComments, fetchPosts }) {
         post={post}
         onForward={handleForward}
         fetchPosts={fetchPosts}
+      />
+      <ConfirmModal
+        isOpen={showModal}
+        onConfirm={deletePost}
+        onCancel={() => setShowModal(false)}
+        message="你确定要删除这条帖子吗？"
       />
     </>
   );

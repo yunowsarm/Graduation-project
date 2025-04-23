@@ -13,6 +13,20 @@
   box-sizing: border-box;
 }
 
+.notificationContainerLight {
+  height: 100vh; /* 让整个容器占满视口高度 */
+  width: 100%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #a1a1a1;
+
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
 /* 通知头部 */
 .notificationHeader {
   display: flex;
@@ -21,6 +35,15 @@
   background-color: #2b2b2b;
   padding: 10px 15px;
   border-bottom: 1px solid #333333;
+}
+
+.notificationHeaderLight {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #eaeaea;
+  padding: 10px 15px;
+  border-bottom: 1px solid #c1c1c1;
 }
 
 /* 图标容器 */
@@ -58,12 +81,27 @@
   background-color: #2980b9;
 }
 
+.markAllBtnLight {
+  padding: 5px 10px;
+  background-color: #3498db; /* 蓝色点缀 */
+  border: none;
+  border-radius: 4px;
+  color: #ececec;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.markAllBtnLight:hover {
+  background-color: #2980b9;
+}
+
 /* 通知列表 */
 .notificationList {
   flex: 1; /* 让它填满剩余空间 */
   overflow-y: auto;
   padding: 10px 15px;
-  margin-top: 12px;
+  margin-top: 5px;
 }
 
 /* 单个通知项 */
@@ -79,8 +117,25 @@
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
+.notificationItemLight {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #e5e5e5;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
 .notificationItem:hover {
   background-color: #333333;
+  transform: translateX(5px);
+}
+
+.notificationItemLight:hover {
+  background-color: #d0d0d0;
   transform: translateX(5px);
 }
 
@@ -105,12 +160,26 @@
 .content {
   flex: 1;
   margin-right: 10px;
+  color: #cccccc;
+}
+
+.contentLight {
+  flex: 1;
+  margin-right: 10px;
+  color: #383838;
 }
 
 /* 时间戳 */
 .time {
   font-size: 12px;
   color: #bbb;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+.timeLight {
+  font-size: 12px;
+  color: #404040;
   margin-left: 10px;
   white-space: nowrap;
 }
@@ -140,23 +209,49 @@
   z-index: 10; /* 确保不会被内容遮挡 */
 }
 
-.pagination button {
+.paginationLight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #eaeaea;
+  position: sticky; /* 让分页栏固定在通知组件内部 */
+  bottom: 0;
+  width: 100%; /* 让它填满 `notificationContainer` */
+  z-index: 10; /* 确保不会被内容遮挡 */
+}
+
+.pagination i {
   padding: 5px 10px;
-  background-color: #444444;
-  border: 1px solid #555555;
-  border-radius: 4px;
   margin: 0 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: color 0.3s ease;
   color: #fff;
 }
 
-.pagination button:hover:not(:disabled) {
-  background-color: #555555;
+.pagination i:hover:not(:disabled) {
+  color: #555555;
 }
 
-.pagination button:disabled {
-  background-color: #555555;
+.pagination i:disabled {
+  color: #555555;
+  cursor: not-allowed;
+}
+
+.paginationLight i {
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  color: #000000;
+}
+
+.paginationLight i:hover:not(:disabled) {
+  color: #d0d0d0;
+}
+
+.paginationLight i:disabled {
+  color: #e0e0e0;
   cursor: not-allowed;
 }
 
@@ -179,3 +274,20 @@
 .icon-default {
   color: #9b59b6;
 }
+
+.noNotification {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.noNotificationLight {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  color: #000000;
+  font-size: 16px;
+}
+

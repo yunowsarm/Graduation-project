@@ -116,7 +116,13 @@ function NormalPost({
           onMouseLeave={hideTooltip}
         >
           <img src={post.avatar} className={styles.avatar} />
-          <strong className={styles.userName}>{post.name}</strong>
+          <strong
+            className={
+              theme === "dark" ? styles.userName : styles.userNameLight
+            }
+          >
+            {post.name}
+          </strong>
           {/* 用户信息 Tooltip */}
           {isTooltipVisible && (
             <div
@@ -144,9 +150,9 @@ function NormalPost({
         <p
           ref={postContentRef}
           style={{ whiteSpace: "pre-line" }}
-          className={`${styles.postContent} ${
-            isPostExpanded ? styles.expanded : styles.clamped
-          }`}
+          className={`${
+            theme === "dark" ? styles.postContent : styles.postContentLight
+          } ${isPostExpanded ? styles.expanded : styles.clamped}`}
         >
           {post.content}
         </p>

@@ -42,6 +42,12 @@
 
 .userName {
   font-weight: bold;
+  color: #ddd;
+}
+
+.userNameLight {
+  font-weight: bold;
+  color: #2e2e2e;
 }
 
 .postTime {
@@ -66,6 +72,20 @@
   line-height: 1.5;
   overflow-wrap: break-word; /* 保证文本在必要时换行 */
   white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+  color:#fff;
+}
+
+.postContentLight {
+  font-size: 16px;
+  margin: 16px 16px 16px 24px;
+  text-align: justify;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-height: 1.5;
+  overflow-wrap: break-word; /* 保证文本在必要时换行 */
+  white-space: pre-wrap; /* 保留换行和空格，同时允许自动换行 */
+  color:#000000;
 }
 
 .imageGrid {
@@ -83,7 +103,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #000000; /*背景色区分未加载时的样式 */
+  background-color: transparent; /*背景色区分未加载时的样式 */
   border-radius: 8px;
 }
 

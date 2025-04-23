@@ -208,7 +208,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #000000; /*背景色区分未加载时的样式 */
+  background-color: transparent; /*背景色区分未加载时的样式 */
   border-radius: 8px;
 }
 

@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import styles from "./ConversationList.module.css";
 import { chatSocket } from "../socket.io/socket";
-
+import { ThemeContext } from "../../context/ThemeContext";
 // eslint-disable-next-line react/prop-types
-const ConversationList = ({ setCurrentConversation, currentUserId }) => {
+const ConversationList = ({
+  setCurrentConversation,
+  currentUserId,
+}) => {
   const [conversations, setConversations] = useState([]);
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
-
-  // 获取会话列表 把这个改成实时的
+  const { theme } = useContext(ThemeContext);
+  // 获取会话列表 
   useEffect(() => {
     async function fetchConversations() {
       try {
@@ -131,7 +135,13 @@ const ConversationList = ({ setCurrentConversation, currentUserId }) => {
   };
 
   return (
-    <div className={styles.conversationList}>
+    <div
+      className={
+        theme === "dark"
+          ? styles.conversationList
+          : styles.conversationListLight
+      }
+    >
       {conversations &&
         conversations.length > 0 &&
         conversations.map((conv) => {
@@ -142,8 +152,16 @@ const ConversationList = ({ setCurrentConversation, currentUserId }) => {
           return (
             <div
               key={conv._id}
-              className={`${styles.conversationItem} ${
-                selectedConversationId === conv._id ? styles.selected : ""
+              className={`${
+                theme === "dark"
+                  ? styles.conversationItem
+                  : styles.conversationItemLight
+              } ${
+                selectedConversationId === conv._id
+                  ? theme === "dark"
+                    ? styles.selected
+                    : styles.selectedLight
+                  : ""
               }`}
               onClick={() => handleConversationClick(conv)}
             >
@@ -159,7 +177,11 @@ const ConversationList = ({ setCurrentConversation, currentUserId }) => {
                   latestMessage.receiverId === currentUserId && (
                     <div className={styles.redDot}></div>
                   )}
-                <span className={styles.username}>
+                <span
+                  className={
+                    theme === "dark" ? styles.username : styles.usernameLight
+                  }
+                >
                   {conv.otherParticipant.username}
                 </span>
               </div>

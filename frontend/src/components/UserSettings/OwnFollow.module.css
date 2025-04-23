@@ -1,9 +1,41 @@
+.ownFollow {
+  padding: 20px;
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.ownFollowLight {
+  padding: 20px;
+  background-color: #ececec;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: #121212; /* 深色背景 */
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.containerLight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #ececec;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
 .userCard {
@@ -12,12 +44,23 @@
   justify-content: space-between;
   width: 100%;
   padding: 15px;
-  background-color: #1e1e1e; /* 轻微提升亮度，突出卡片 */
+  background-color: #3a3a3a; /* 轻微提升亮度，突出卡片 */
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease-in-out;
 }
 
+.userCardLight {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 15px;
+  background-color: #e0e0e0; /* 轻微提升亮度，突出卡片 */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
 
 .userInfo {
   display: flex;
@@ -29,7 +72,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background:#fff;
+  background: #fff;
   border: 2px solid #444; /* 细微的边框让头像更立体 */
   object-fit: cover; /* 裁剪图片以适应容器 */
 }
@@ -40,9 +83,20 @@
   color: #ffffff;
 }
 
+.usernameLight {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+}
+
 .email {
   font-size: 14px;
   color: #b0b0b0;
+}
+
+.emailLight {
+  font-size: 14px;
+  color: #3c3c3c;
 }
 
 .buttonGroup {
@@ -59,8 +113,43 @@
   cursor: pointer;
   font-size: 14px;
   transition: background 0.3s ease-in-out;
+  margin-right: 10px;
 }
 
 .button:hover {
   background-color: #ababab;
+}
+
+.MessageButton {
+  padding: 6px 12px;
+  background-color: #58a3ff; /* 亮色按钮 */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease-in-out;
+  margin-right: 10px;
+}
+
+.MessageButton:hover {
+  background-color: #2282ff;
+}
+
+.noFollow {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  color: #ffffff;
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+.noFollowLight {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  color: #000000;
+  font-size: 16px;
+  margin: 20px 0;
 }

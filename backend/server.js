@@ -405,6 +405,8 @@ app.post("/register", async (req, res) => {
       sign: "",
       following: [],
       fans: [],
+      role: "normal",
+      state: "active",
     };
 
     const result = await usersCollection.insertOne(newUser);
@@ -421,7 +423,6 @@ app.post("/register", async (req, res) => {
   }
 });
 
-//* 用户登录
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -435,6 +436,11 @@ app.post("/login", async (req, res) => {
       return res.status(400).json({ message: "用户不存在" });
     }
 
+    // 判断账号是否被冻结
+    if (user.state === "frozen") {
+      return res.status(403).json({ message: "该账号已被冻结，无法登录" });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "密码错误" });
@@ -446,14 +452,14 @@ app.post("/login", async (req, res) => {
         email: user.email,
       },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "36h" }
     );
 
     res.cookie("token", token, {
       httpOnly: false,
       secure: false,
       sameSite: "Strict",
-      maxAge: 3600000,
+      maxAge: 43200000,
     });
 
     res
@@ -501,6 +507,8 @@ app.get("/user/me", authenticateToken, async (req, res) => {
       avatar: user.avatar,
       createdAt: user.createdAt,
       sign: user.sign,
+      role: user.role,
+      state: user.state,
     });
   } catch (error) {
     console.error("获取用户信息失败:", error);
@@ -519,6 +527,94 @@ app.get("/user/originalUser/:userId", async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.error("获取用户信息失败:", error);
+    res.status(500).json({ message: "服务器错误" });
+  }
+});
+
+//!获取所有用户信息除了Admin
+app.get("/user/allUsers", async (req, res) => {
+  try {
+    const users = await usersCollection
+      .find({ role: { $ne: "manager" } })
+      .toArray();
+    const sanitizedUsers = users.map((user) => ({
+      _id: user._id,
+      username: user.username || "",
+      email: user.email || "",
+      state: user.state || "未知",
+      role: user.role || "normal",
+    }));
+
+    res.status(200).json(sanitizedUsers);
+  } catch (error) {
+    console.error("获取用户信息失败:", error);
+    res.status(500).json({ message: "服务器错误" });
+  }
+});
+
+//!获取用户帖子数量
+app.get("/user/postCount/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const postCount = await postsCollection.countDocuments({
+      author: new ObjectId(userId),
+    });
+    res.status(200).json({ postCount });
+  } catch (error) {
+    console.error("获取用户帖子数量失败:", error);
+    res.status(500).json({ message: "服务器错误" });
+  }
+});
+
+//!冻结用户
+app.put("/user/freeze/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    if (!user) {
+      return res.status(404).json({ message: "用户不存在" });
+    }
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { state: "frozen" } }
+    );
+    res.status(200).json({ message: "用户已冻结" });
+  } catch (error) {
+    console.error("冻结用户失败:", error);
+    res.status(500).json({ message: "服务器错误" });
+  }
+});
+
+//!解冻用户
+app.put("/user/unfreeze/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    if (!user) {
+      return res.status(404).json({ message: "用户不存在" });
+    }
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { state: "active" } }
+    );
+    res.status(200).json({ message: "用户已解冻" });
+  } catch (error) {
+    console.error("解冻用户失败:", error);
+  }
+});
+
+//!删除用户
+app.delete("/user/delete/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    if (!user) {
+      return res.status(404).json({ message: "用户不存在" });
+    }
+    await usersCollection.deleteOne({ _id: new ObjectId(userId) });
+    res.status(200).json({ message: "用户已删除" });
+  } catch (error) {
+    console.error("删除用户失败:", error);
     res.status(500).json({ message: "服务器错误" });
   }
 });
@@ -614,57 +710,89 @@ app.get("/user/ownPosts", authenticateToken, async (req, res) => {
 
 app.get("/user/likePosts", authenticateToken, async (req, res) => {
   try {
-    const userID = req.user._id.toString(); // 直接转换为字符串
-    // 查询所有喜欢的帖子，按创建时间降序排序
+    const userID = req.user._id.toString();
+
     const userPosts = await postsCollection
       .find({ loveNum: { $in: [userID] } })
-      .sort({ createdAt: -1 }) // 最新的帖子排在前面
+      .sort({ createdAt: -1 })
       .toArray();
+
     if (!userPosts.length) {
       return res.status(200).json({
         message: "没有找到您喜欢的帖子",
         posts: [],
       });
     }
+
     const enrichedPosts = await Promise.all(
       userPosts.map(async (post) => {
         const user = await usersCollection.findOne(
           { _id: post.author },
-          { projection: { avatar: 1, username: 1, email: 1, createdAt: 1 } }
+          {
+            projection: {
+              avatar: 1,
+              username: 1,
+              email: 1,
+              createdAt: 1,
+              state: 1,
+            },
+          }
         );
+
+        // 如果作者不存在或被冻结，则跳过该帖子
+        if (!user || user.state === "frozen") return null;
+
         if (post.isForwarded) {
           const originalPostUser = await usersCollection.findOne(
             { _id: post.originalPostAuthor },
-            { projection: { avatar: 1, username: 1, email: 1, createdAt: 1 } }
+            {
+              projection: {
+                avatar: 1,
+                username: 1,
+                email: 1,
+                createdAt: 1,
+                state: 1,
+              },
+            }
           );
+
+          // 如果原帖作者不存在或被冻结，也跳过
+          if (!originalPostUser || originalPostUser.state === "frozen")
+            return null;
+
           return {
-            ...post, //包含了originalPost(旧帖子的相关内容)/content(新帖子的内容)/author(新帖子的作者),createdAt(新帖子创立时间)
-            originalPostAvatar: originalPostUser?.avatar || "未知用户",
-            originalPostName: originalPostUser?.username || "未知用户",
-            originalPostEmail: originalPostUser?.email || "未知用户",
-            originalPostCreatedAt: originalPostUser?.createdAt || "未知时间",
-            originalPostUserId: originalPostUser?._id,
-            avatar: user?.avatar || "未知用户", //新帖子的作者头像
-            name: user?.username || "未知用户", //新帖子的作者用户名
-            email: user?.email || "未知用户", //新帖子的作者邮箱
-            userCreatedAt: user?.createdAt || "未知时间",
-            userId: user?._id,
+            ...post,
+            originalPostAvatar: originalPostUser.avatar,
+            originalPostName: originalPostUser.username,
+            originalPostEmail: originalPostUser.email,
+            originalPostCreatedAt: originalPostUser.createdAt,
+            originalPostUserId: originalPostUser._id,
+
+            avatar: user.avatar,
+            name: user.username,
+            email: user.email,
+            userCreatedAt: user.createdAt,
+            userId: user._id,
           };
         } else {
           return {
             ...post,
-            avatar: user?.avatar || "未知用户",
-            name: user?.username || "未知用户",
-            email: user?.email || "未知用户",
-            userCreatedAt: user?.createdAt || "未知时间",
-            userId: user?._id,
+            avatar: user.avatar,
+            name: user.username,
+            email: user.email,
+            userCreatedAt: user.createdAt,
+            userId: user._id,
           };
         }
       })
     );
+
+    // 过滤掉为 null 的帖子
+    const filteredPosts = enrichedPosts.filter(Boolean);
+
     res.status(200).json({
       message: "获取用户帖子成功",
-      posts: enrichedPosts,
+      posts: filteredPosts,
     });
   } catch (error) {
     console.error("获取用户帖子失败:", error);
@@ -756,49 +884,105 @@ app.get("/posts/:postId", async (req, res) => {
   }
 });
 
-//*获取所有帖子,同步更新头像和用户名
+//*获取所有帖子
 app.get("/Content/loadContent", async (req, res) => {
   try {
-    const posts = await postsCollection.find().toArray();
+    const posts = await postsCollection
+      .aggregate([
+        // 连表查询作者信息（Users 大写）
+        {
+          $lookup: {
+            from: "Users",
+            localField: "author",
+            foreignField: "_id",
+            as: "authorInfo",
+          },
+        },
+        { $unwind: "$authorInfo" }, // 拆解数组
 
-    const enrichedPosts = await Promise.all(
-      posts.map(async (post) => {
-        const user = await usersCollection.findOne(
-          { _id: post.author },
-          { projection: { avatar: 1, username: 1, email: 1, createdAt: 1 } }
-        );
-        if (post.isForwarded) {
-          const originalPostUser = await usersCollection.findOne(
-            { _id: post.originalPostAuthor },
-            { projection: { avatar: 1, username: 1, email: 1, createdAt: 1 } }
-          );
-          return {
-            ...post, //包含了originalPost(旧帖子的相关内容)/content(新帖子的内容)/author(新帖子的作者),createdAt(新帖子创立时间)
-            originalPostAvatar: originalPostUser?.avatar || "未知用户",
-            originalPostName: originalPostUser?.username || "未知用户",
-            originalPostEmail: originalPostUser?.email || "未知用户",
-            originalPostCreatedAt: originalPostUser?.createdAt || "未知时间",
-            originalPostUserId: originalPostUser?._id,
-            avatar: user?.avatar || "未知用户", //新帖子的作者头像
-            name: user?.username || "未知用户", //新帖子的作者用户名
-            email: user?.email || "未知用户", //新帖子的作者邮箱
-            userCreatedAt: user?.createdAt || "未知时间",
-            userId: user?._id,
-          };
-        } else {
-          return {
-            ...post,
-            avatar: user?.avatar || "未知用户",
-            name: user?.username || "未知用户",
-            email: user?.email || "未知用户",
-            userCreatedAt: user?.createdAt || "未知时间",
-            userId: user?._id,
-          };
-        }
-      })
-    );
+        // 过滤掉冻结或不存在作者
+        {
+          $match: {
+            "authorInfo.state": { $ne: "frozen" },
+          },
+        },
 
-    res.status(200).json(enrichedPosts);
+        // 如果是转发帖子，关联原作者信息
+        {
+          $lookup: {
+            from: "Users",
+            localField: "originalPostAuthor",
+            foreignField: "_id",
+            as: "originalAuthorInfo",
+          },
+        },
+
+        // 如果是转发，检查原帖作者是否存在且未被冻结
+        {
+          $addFields: {
+            isOriginalAuthorValid: {
+              $cond: {
+                if: { $eq: ["$isForwarded", true] },
+                then: {
+                  $and: [
+                    { $gt: [{ $size: "$originalAuthorInfo" }, 0] },
+                    {
+                      $ne: [
+                        { $arrayElemAt: ["$originalAuthorInfo.state", 0] },
+                        "frozen",
+                      ],
+                    },
+                  ],
+                },
+                else: true,
+              },
+            },
+          },
+        },
+
+        { $match: { isOriginalAuthorValid: true } },
+
+        // 整理字段输出
+        {
+          $project: {
+            content: 1,
+            url: 1,
+            isForwarded: 1,
+            createdAt: 1,
+
+            // 新帖作者信息
+            author: "$author",
+            avatar: "$authorInfo.avatar",
+            name: "$authorInfo.username",
+            email: "$authorInfo.email",
+            userCreatedAt: "$authorInfo.createdAt",
+            userId: "$authorInfo._id",
+
+            // 原帖作者信息
+            originalPostAuthor: 1,
+            originalPost: 1,
+            originalPostUrl: 1,
+            originalPostAvatar: {
+              $arrayElemAt: ["$originalAuthorInfo.avatar", 0],
+            },
+            originalPostName: {
+              $arrayElemAt: ["$originalAuthorInfo.username", 0],
+            },
+            originalPostEmail: {
+              $arrayElemAt: ["$originalAuthorInfo.email", 0],
+            },
+            originalPostCreatedAt: {
+              $arrayElemAt: ["$originalAuthorInfo.createdAt", 0],
+            },
+            originalPostUserId: {
+              $arrayElemAt: ["$originalAuthorInfo._id", 0],
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    res.status(200).json(posts);
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Failed to fetch posts" });
@@ -1229,6 +1413,30 @@ app.post("/posts/forward/load/:postId", async (req, res) => {
     res.status(500).json({ message: "服务器错误" });
   }
 });
+
+app.delete("/posts/delete/:postId", authenticateToken, async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    if (!ObjectId.isValid(postId)) {
+      return res.status(400).json({ message: "无效的帖子ID" });
+    }
+
+    const result = await postsCollection.deleteOne({
+      _id: new ObjectId(postId),
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "未找到对应的帖子" });
+    }
+
+    res.status(200).json({ message: "帖子删除成功" });
+  } catch (err) {
+    console.error("删除帖子失败:", err);
+    res.status(500).json({ message: "服务器错误" });
+  }
+});
+
 // *加载深层帖子
 const getDeepPosts = async (post, depth = 0) => {
   if (!post.isForwarded) {
@@ -1279,50 +1487,51 @@ app.post("/search/searchByPostContent", async (req, res) => {
     const posts = await postsCollection
       .find({ content: { $regex: query, $options: "i" } })
       .toArray();
+
     const enrichedPosts = await Promise.all(
       posts.map(async (post) => {
-        const user = await usersCollection.findOne(
-          { _id: post.author },
-          { projection: { avatar: 1, username: 1, email: 1, createdAt: 1 } }
-        );
+        const user = await usersCollection.findOne({
+          _id: post.author,
+          state: { $ne: "frozen" },
+        });
+
+        let originalPostUser = null;
         if (post.isForwarded) {
-          const originalPostUser = await usersCollection.findOne(
-            { _id: post.originalPostAuthor },
-            { projection: { avatar: 1, username: 1, email: 1, createdAt: 1 } }
-          );
-          return {
-            ...post, //包含了originalPost(旧帖子的相关内容)/content(新帖子的内容)/author(新帖子的作者),createdAt(新帖子创立时间)
-            originalPostAvatar: originalPostUser?.avatar || "未知用户",
-            originalPostName: originalPostUser?.username || "未知用户",
-            originalPostEmail: originalPostUser?.email || "未知用户",
-            originalPostCreatedAt: originalPostUser?.createdAt || "未知时间",
-            avatar: user?.avatar || "未知用户", //新帖子的作者头像
-            userId: user?._id || "未知用户", //新帖子的作者id
-            originalPostUserId: originalPostUser?._id || "未知用户", //旧帖子的作者id
-            name: user?.username || "未知用户", //新帖子的作者用户名
-            email: user?.email || "未知用户", //新帖子的作者邮箱
-            userCreatedAt: user?.createdAt || "未知时间",
-          };
-        } else {
-          return {
-            ...post,
-            userId: user?._id || "未知用户", //新帖子的作者id
-            avatar: user?.avatar || "未知用户",
-            name: user?.username || "未知用户",
-            email: user?.email || "未知用户",
-            userCreatedAt: user?.createdAt || "未知时间",
-          };
+          originalPostUser = await usersCollection.findOne({
+            _id: post.originalPostAuthor,
+            state: { $ne: "frozen" },
+          });
         }
+
+        if (!user || (post.isForwarded && !originalPostUser)) return null;
+
+        return {
+          ...post,
+          avatar: user.avatar,
+          userId: user._id,
+          name: user.username,
+          email: user.email,
+          userCreatedAt: user.createdAt,
+          ...(post.isForwarded && {
+            originalPostAvatar: originalPostUser.avatar,
+            originalPostName: originalPostUser.username,
+            originalPostEmail: originalPostUser.email,
+            originalPostCreatedAt: originalPostUser.createdAt,
+            originalPostUserId: originalPostUser._id,
+          }),
+        };
       })
     );
-    if (enrichedPosts.length === 0) {
+
+    const filteredPosts = enrichedPosts.filter((p) => p !== null);
+
+    if (filteredPosts.length === 0) {
       return res
         .status(200)
         .json({ message: "未找到匹配的帖子", results: null });
     }
-    res
-      .status(200)
-      .json({ results: enrichedPosts.length > 0 ? enrichedPosts : [] });
+
+    res.status(200).json({ results: filteredPosts });
   } catch (err) {
     console.error("搜索失败:", err);
     res.status(500).json({ message: "服务器错误" });
@@ -1334,18 +1543,24 @@ app.post("/search/searchByUsername", async (req, res) => {
   if (!query) {
     return res.status(400).json({ error: "查询参数不能为空" });
   }
+
   try {
     const users = await usersCollection
-      .find({ username: { $regex: query, $options: "i" } }) // 模糊搜索
-      .project({ username: 1, email: 1, _id: 1 }) // 只返回 username
+      .find({
+        username: { $regex: query, $options: "i" },
+        state: { $ne: "frozen" },
+      })
+      .project({ username: 1, email: 1, _id: 1 })
       .limit(10)
-      .toArray(); // 转换为数组
+      .toArray();
+
     if (users.length === 0) {
       return res
         .status(200)
         .json({ message: "未找到匹配的用户", results: null });
     }
-    res.status(200).json({ results: users.length > 0 ? users : [] });
+
+    res.status(200).json({ results: users });
   } catch (err) {
     console.error("搜索失败:", err);
     res.status(500).json({ message: "服务器错误" });
@@ -1361,8 +1576,8 @@ app.post("/search/searchByEmail", async (req, res) => {
 
   try {
     const user = await usersCollection.findOne(
-      { email: query }, // 严格匹配 email
-      { projection: { username: 1, email: 1, _id: 1 } } // 只返回必要的字段
+      { email: query, state: { $ne: "frozen" } },
+      { projection: { username: 1, email: 1, _id: 1 } }
     );
 
     if (!user) {
@@ -1417,6 +1632,7 @@ app.post("/follow/removeFollow", authenticateToken, async (req, res) => {
     { _id: new ObjectId(userId) },
     { $pull: { fans: req.user._id } }
   );
+  return res.status(200).json({ message: "取消关注成功" });
 });
 
 //* 获取通知列表接口
@@ -1510,6 +1726,49 @@ app.post("/conversations", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "创建会话失败" });
   }
 });
+
+//*获取会话中其他用户的信息
+app.get(
+  "/conversations/otherUser/:conversationId",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const conversationId = req.params.conversationId;
+      const userId = req.user._id;
+
+      //加上合法性检查
+      if (!ObjectId.isValid(conversationId)) {
+        return res.status(400).json({ message: "无效的conversationId" });
+      }
+
+      const conversation = await conversationsCollection.findOne({
+        _id: new ObjectId(conversationId),
+        participants: { $in: [new ObjectId(userId)] }, // 强制转为 ObjectId 类型
+      });
+
+      if (!conversation) {
+        return res.status(404).json({ message: "会话不存在" });
+      }
+
+      const otherUserId = conversation.participants.find(
+        (id) => id.toString() !== userId.toString()
+      );
+
+      const otherUser = await usersCollection.findOne({
+        _id: new ObjectId(otherUserId),
+      });
+
+      if (!otherUser) {
+        return res.status(404).json({ message: "用户不存在" });
+      }
+
+      res.status(200).json(otherUser);
+    } catch (error) {
+      console.error("获取其他用户信息失败:", error);
+      res.status(500).json({ message: "服务器错误" });
+    }
+  }
+);
 
 //* 获取会话列表
 app.get("/conversations", authenticateToken, async (req, res) => {

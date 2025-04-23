@@ -5,8 +5,26 @@
   border-radius: 8px;
 }
 
+.containerLight {
+  background-color: #f0f0f0;
+  color: #000000;
+  padding: 16px;
+  border-radius: 8px;
+}
+
 .userCard {
   background-color: #2a2a2a;
+  padding: 12px;
+  margin: 16px 0;
+  border-radius: 6px;
+  display: flex; /* 让内容和按钮横向排列 */
+  align-items: center; /* 垂直居中 */
+  justify-content: space-between; /* 两端对齐 */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.userCardLight {
+  background-color: #dadada;
   padding: 12px;
   margin: 16px 0;
   border-radius: 6px;
@@ -20,6 +38,10 @@
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
 }
 
+.userCardLight:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
 .userInfo {
   display: flex;
   flex-direction: column;
@@ -31,9 +53,20 @@
   color: #b3b3b3;
 }
 
+.usernameLight {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+}
+
 .email {
   font-size: 14px;
   color: #b0bec5;
+}
+
+.emailLight {
+  font-size: 14px;
+  color: #333333;
 }
 
 .buttonGroup {
@@ -42,8 +75,19 @@
 }
 
 .button {
-  background-color: #545454;
-  color: #ffffff;
+  background-color: #808080;
+  color: #dadada;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.buttonLight {
+  background-color: #b9b9b9;
+  color: #000000;
   border: none;
   padding: 6px 12px;
   border-radius: 4px;
@@ -54,4 +98,8 @@
 
 .button:hover {
   background-color: #626262;
+}
+
+.buttonLight:hover {
+  background-color: #a0a0a0;
 }

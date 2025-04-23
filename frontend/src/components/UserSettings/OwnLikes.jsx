@@ -1,17 +1,18 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import NormalPost from "../normalPost_forwardPost/NormalPost";
 import ForwardPost from "../normalPost_forwardPost/ForwardPost";
 import ImagePreviewModal from "../ImagePreviewModal";
 import styles from "./OwnLikes.module.css";
+import { ThemeContext } from "../../context/ThemeContext";
 function OwnLikes({ canScroll, setCanParentScroll }) {
   const [posts, setPosts] = useState([]);
   const [previewImageIndex, setPreviewImageIndex] = useState(null);
   const [currentPost, setCurrentPost] = useState(null);
   const postsRef = useRef(null);
   const postsElement = postsRef.current;
-
+  const { theme } = useContext(ThemeContext);
   // 监听子组件的滚动事件
   const handleChildScroll = () => {
     if (postsElement) {
@@ -74,32 +75,47 @@ function OwnLikes({ canScroll, setCanParentScroll }) {
   useEffect(() => {
     getOwnLikes();
   }, []);
+
   return (
     <div
-      className={`${styles.ownPosts} ${canScroll ? styles.scrollable : ""}`}
+      className={`${
+        theme === "dark" ? styles.ownPosts : styles.ownPostsLight
+      } ${canScroll ? styles.scrollable : ""}`}
       ref={postsRef}
     >
-      {posts.map((post, index) => (
-        <div key={post._id || index} className={styles.postItem}>
-          {post.isForwarded ? (
-            <ForwardPost
-              fetchPosts={fetchPosts}
-              post={post}
-              handleContextMenu={handleContextMenu}
-              setPreviewImageIndex={setPreviewImageIndex}
-              setCurrentPost={setCurrentPost}
-            />
-          ) : (
-            <NormalPost
-              fetchPosts={fetchPosts}
-              post={post}
-              handleContextMenu={handleContextMenu}
-              setPreviewImageIndex={setPreviewImageIndex}
-              setCurrentPost={setCurrentPost}
-            />
-          )}
-        </div>
-      ))}
+      {posts.length > 0 ? (
+        posts.map((post, index) => (
+          <div
+            key={post._id || index}
+            className={
+              theme === "dark" ? styles.postItem : styles.postItemLight
+            }
+          >
+            {post.isForwarded ? (
+              <ForwardPost
+                fetchPosts={fetchPosts}
+                post={post}
+                handleContextMenu={handleContextMenu}
+                setPreviewImageIndex={setPreviewImageIndex}
+                setCurrentPost={setCurrentPost}
+              />
+            ) : (
+              <NormalPost
+                fetchPosts={fetchPosts}
+                post={post}
+                handleContextMenu={handleContextMenu}
+                setPreviewImageIndex={setPreviewImageIndex}
+                setCurrentPost={setCurrentPost}
+              />
+            )}
+          </div>
+        ))
+      ) : (
+        <p className={theme === "dark" ? styles.noLikes : styles.noLikesLight}>
+          暂无点赞
+        </p>
+      )}
+
       {previewImageIndex !== null && currentPost && (
         <ImagePreviewModal
           images={

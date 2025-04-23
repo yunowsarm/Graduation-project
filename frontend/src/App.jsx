@@ -14,7 +14,8 @@ import AIPartBar from "./components/AIPartBar.jsx";
 import styles from "./pages/TotalLayout.module.css";
 import SearchResults from "./pages/SearchResults.jsx";
 import { ThemeContext } from "./context/ThemeContext"; // 导入 ThemeProvider
-
+import Admin from "./components/Admin/Admin.jsx";
+import AdminRoute from "./AdminRoute.jsx";
 function App() {
   const { theme } = useContext(ThemeContext);
   return (
@@ -99,6 +100,14 @@ function App() {
                       <PrivateRoute>
                         <PostsDetail />
                       </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="admin"
+                    element={
+                      <AdminRoute>
+                        <Admin />
+                      </AdminRoute>
                     }
                   />
 

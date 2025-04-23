@@ -1,15 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { chatSocket } from "../socket.io/socket";
 import styles from "./ChatWindow.module.css";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const ChatWindow = ({ conversationId, currentUserId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const isFirstLoad = useRef(true); // 记录是否为首次加载
+  const [otherUser, setOtherUser] = useState(null);
+  const { theme } = useContext(ThemeContext);
 
   // 标记当前会话下接收者为当前用户的消息为已读
   const markMessagesAsRead = async () => {
@@ -29,6 +32,23 @@ const ChatWindow = ({ conversationId, currentUserId }) => {
       console.error("标记消息已读失败:", error);
     }
   };
+
+  const fetchOtherUser = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/conversations/otherUser/${conversationId}`,
+        { withCredentials: true }
+      );
+      setOtherUser(res.data);
+    } catch (error) {
+      console.error("获取对方用户信息失败:", error);
+    }
+  };
+  useEffect(() => {
+    if (/^[0-9a-fA-F]{24}$/.test(conversationId)) {
+      fetchOtherUser();
+    }
+  }, [conversationId]);
 
   useEffect(() => {
     if (!conversationId && !currentUserId) return; // 如果没有 conversationId 或 currentUserId，则不执行后续操作
@@ -95,6 +115,11 @@ const ChatWindow = ({ conversationId, currentUserId }) => {
   }, [messages, conversationId, currentUserId]);
 
   const sendMessage = async () => {
+    if (otherUser?.state === "frozen") {
+      console.warn("对方账号被冻结，消息未发送。");
+      return;
+    }
+
     if (input.trim()) {
       try {
         const res = await axios.post(
@@ -144,11 +169,17 @@ const ChatWindow = ({ conversationId, currentUserId }) => {
         }
       }
 
+      const isMe = msg.senderId === currentUserId;
+
       elements.push(
         <div
           key={msg._id}
           className={`${styles.message} ${
-            msg.senderId === currentUserId ? styles.me : styles.other
+            isMe
+              ? styles.me
+              : theme === "dark"
+              ? styles.other
+              : styles.otherLight
           }`}
         >
           <p>{msg.content}</p>
@@ -159,23 +190,44 @@ const ChatWindow = ({ conversationId, currentUserId }) => {
       lastElementType = "message";
     });
 
+    // 如果对方被冻结，在消息末尾追加一条封禁提示
+    if (otherUser?.state === "frozen") {
+      elements.push(
+        <div key="banned-warning" className={styles.bannedNoticeFinal}>
+          ⚠️ 对方账号已封禁，您无法与其继续对话
+        </div>
+      );
+    }
+
     return elements;
   };
 
   return (
-    <div className={styles.chatWindow}>
+    <div
+      className={theme === "dark" ? styles.chatWindow : styles.chatWindowLight}
+    >
       <div className={styles.messages}>
         {renderMessages()}
         <div ref={messagesEndRef} /> {/* 滚动锚点 */}
       </div>
       {conversationId && (
-        <div className={styles.inputArea}>
+        <div
+          className={
+            theme === "dark" ? styles.inputArea : styles.inputAreaLight
+          }
+        >
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            disabled={otherUser?.state === "frozen"}
           />
-          <button onClick={sendMessage}>发送</button>
+          <button
+            onClick={sendMessage}
+            disabled={otherUser?.state === "frozen" || !input.trim()}
+          >
+            发送
+          </button>
         </div>
       )}
     </div>

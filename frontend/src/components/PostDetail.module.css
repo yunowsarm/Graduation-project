@@ -58,7 +58,7 @@
   color: #0056b3;
 }
 
-backButtonLight:hover {
+.backButtonLight:hover {
   color: #0056b3;
 }
 
@@ -160,7 +160,7 @@ backButtonLight:hover {
   height: 30px;
   border-radius: 50%; /* 圆形头像 */
   object-fit: cover; /* 裁剪图片以适应容器 */
-  background-color: #000000; /* 透明 */
+  background-color: #ffffff; /* 透明 */
 }
 
 .forwardPostTime {
@@ -290,7 +290,7 @@ backButtonLight:hover {
   height: 30px;
   border-radius: 50%; /* 圆形头像 */
   object-fit: cover;
-  background-color: #f0f0f0; /* 默认背景色 */
+  background-color: #ffffff; /* 默认背景色 */
 }
 
 .commentAvatarLight {
@@ -298,7 +298,7 @@ backButtonLight:hover {
   height: 30px;
   border-radius: 50%; /* 圆形头像 */
   object-fit: cover;
-  background-color: #000000; /* 默认背景色 */
+  background-color: #ffffff; /* 默认背景色 */
 }
 
 .commentUsername {

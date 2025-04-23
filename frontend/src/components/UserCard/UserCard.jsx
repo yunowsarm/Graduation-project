@@ -8,6 +8,8 @@ function UserCard({ userId, email, userName, avatar }) {
   const [isFollow, setIsFollow] = useState(null);
   const [isOwn, setIsOwn] = useState(false);
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState(null);
+  const [postCount, setPostCount] = useState(0);
   useEffect(() => {
     queryIsFollow();
   }, []);
@@ -27,7 +29,6 @@ function UserCard({ userId, email, userName, avatar }) {
           withCredentials: true, // 确保发送 Cookie
         }
       );
-      console.log(response.data);
       setIsFollow(response.data.isFollowed);
       if (response.data.currentUserId === userId) {
         setIsOwn(true);
@@ -38,7 +39,7 @@ function UserCard({ userId, email, userName, avatar }) {
   };
 
   const addFollow = async () => {
-    // 乐观更新：先更新状态，让按钮立刻显示已关注
+    // 先更新状态，让按钮立刻显示已关注
     setIsFollow(true);
     try {
       await axios.post(
@@ -70,6 +71,40 @@ function UserCard({ userId, email, userName, avatar }) {
       setIsFollow(true);
     }
   };
+
+  const getUserInfo = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/user/originalUser/${userId}`,
+        {
+          withCredentials: true, // 确保发送 Cookie
+        }
+      );
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error("获取用户信息失败:", error);
+    }
+  };
+
+  const getPostCount = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/user/postCount/${userId}`,
+        {
+          withCredentials: true, // 确保发送 Cookie
+        }
+      );
+      console.log(response.data);
+      setPostCount(response.data.postCount);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+    getPostCount();
+  }, []);
 
   const toggleFollow = async () => {
     // 调用关注/取消关注的 API
@@ -106,9 +141,15 @@ function UserCard({ userId, email, userName, avatar }) {
           <strong className={styles.tooltipEmail}>{email || "未提供"}</strong>
           {/* 新增统计数据区域 */}
           <div className={styles.tooltipStats}>
-            <span className={styles.statItem}>{formatNumber(9000)} 关注</span>
-            <span className={styles.statItem}>{formatNumber(129000)} 粉丝</span>
-            <span className={styles.statItem}>{formatNumber(19000)} 帖子</span>
+            <span className={styles.statItem}>
+              {formatNumber(userInfo?.following.length || 0)} 关注
+            </span>
+            <span className={styles.statItem}>
+              {formatNumber(userInfo?.fans.length || 0)} 粉丝
+            </span>
+            <span className={styles.statItem}>
+              {formatNumber(postCount)} 帖子
+            </span>
           </div>
         </div>
       </div>

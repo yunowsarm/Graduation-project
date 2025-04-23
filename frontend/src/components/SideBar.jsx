@@ -170,6 +170,20 @@ function SideBar() {
               <span>个人资料</span>
             </Link>
           </li>
+          {userData.role === "manager" && (
+            <li>
+              <Link to="/admin">
+                <i
+                  className={
+                    location.pathname === "/admin"
+                      ? "fi fi-sr-user-gear"
+                      : "fi fi-br-user-gear"
+                  }
+                ></i>{" "}
+                <span>用户管理</span>
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
       <div className={SideBarstyles.bottomSection}>

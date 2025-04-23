@@ -10,3 +10,34 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
 }
+
+.bookMarkLight {
+  padding: 2%;
+  flex: 1;
+  background-color: #ffffff;
+  color: #000000;
+  height: 100vh;
+  overflow-y: scroll; /* 保持滚动功能 */
+  border-radius: 3%;
+  /* 隐藏滚动条 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.noLikes {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  color: #ffffff;
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+.noLikesLight {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  color: #000000;
+  font-size: 16px;
+  margin: 20px 0;
+}

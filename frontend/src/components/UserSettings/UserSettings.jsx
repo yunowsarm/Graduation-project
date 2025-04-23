@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Modal from "./Modal";
 import OwnPosts from "./OwnPosts";
 import styles from "./UserSettings.module.css";
 import axios from "axios";
 import OwnLikes from "./OwnLikes";
 import OwnFollow from "./OwnFollow";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const UserSettings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +20,7 @@ const UserSettings = () => {
   const [canChildScroll, setCanChildScroll] = useState(false); // 控制子页面滚动
   const [canParentScroll, setCanParentScroll] = useState(true); // 控制父页面滚动
   const parentRef = useRef(null);
-
+  const { theme } = useContext(ThemeContext);
   const fetchUser = async () => {
     try {
       const response = await axios.get("http://localhost:3001/user/me", {
@@ -31,6 +32,7 @@ const UserSettings = () => {
         email: response.data.email,
         createdAt: response.data.createdAt,
         sign: response.data.sign,
+        id: response.data.id,
       });
     } catch (error) {
       console.error("获取用户失败:", error);
@@ -103,21 +105,41 @@ const UserSettings = () => {
   }, [canParentScroll]);
 
   return (
-    <div className={styles.profile_container} ref={parentRef}>
-      <div className={styles.header}>
-        <h1>{profileData.username}</h1>
-        <p>2 帖子</p>
-      </div>
+    <div
+      className={
+        theme === "dark"
+          ? styles.profile_container
+          : styles.profile_containerLight
+      }
+      ref={parentRef}
+    >
+      <div className={styles.header} />
       <div className={styles.banner}></div>
-      <div className={styles.profile_section}>
-        <div className={styles.avatar_container}>
+      <div
+        className={
+          theme === "dark"
+            ? styles.profile_section
+            : styles.profile_sectionLight
+        }
+      >
+        <div
+          className={
+            theme === "dark"
+              ? styles.avatar_container
+              : styles.avatar_containerLight
+          }
+        >
           <img
             src={profileData.avatar}
             alt="avatar"
             className={styles.avatar}
           />
         </div>
-        <div className={styles.profile_info}>
+        <div
+          className={
+            theme === "dark" ? styles.profile_info : styles.profile_infoLight
+          }
+        >
           <h2>{profileData.username}</h2>
           <p>
             {profileData.sign ? profileData.sign : "这个人很神秘，什么都没有写"}
@@ -134,7 +156,7 @@ const UserSettings = () => {
       </div>
       <div className={styles.tabs}>
         <span
-          className={`${styles.tab} ${
+          className={`${theme == "dark" ? styles.tab : styles.tabLight} ${
             activeTab === "posts" ? styles.active : ""
           }`}
           onClick={() => setActiveTab("posts")}
@@ -142,7 +164,7 @@ const UserSettings = () => {
           帖子
         </span>
         <span
-          className={`${styles.tab} ${
+          className={`${theme == "dark" ? styles.tab : styles.tabLight} ${
             activeTab === "following" ? styles.active : ""
           }`}
           onClick={() => setActiveTab("following")}
@@ -150,7 +172,7 @@ const UserSettings = () => {
           关注
         </span>
         <span
-          className={`${styles.tab} ${
+          className={`${theme == "dark" ? styles.tab : styles.tabLight} ${
             activeTab === "likes" ? styles.active : ""
           }`}
           onClick={() => setActiveTab("likes")}
@@ -172,6 +194,7 @@ const UserSettings = () => {
           canScroll={canChildScroll}
           setCanParentScroll={setCanParentScroll}
           canParentScroll={canParentScroll}
+          currectUser={profileData}
         />
       )}
       {activeTab === "likes" && (

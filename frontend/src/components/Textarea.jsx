@@ -4,6 +4,7 @@ import styles from "./Textarea.module.css";
 import Emoji from "./Emoji";
 import axios from "axios";
 import { ThemeContext } from "../context/ThemeContext";
+import BanDialog from "./BanDialog/BanDialog";
 
 function Textarea({ fetchPosts, setIsLoading, outerLayerRef }) {
   const [imgclass, setImgClass] = useState("fi fi-rr-add-image");
@@ -24,6 +25,8 @@ function Textarea({ fetchPosts, setIsLoading, outerLayerRef }) {
   const toastTimeoutRef = useRef(null); // 初始化为 null，用来保存定时器 ID
   const [showToast, setShowToast] = useState(false);
   const { theme } = useContext(ThemeContext);
+  const [user, setUser] = useState(null);
+  const [showBanDialog, setShowBanDialog] = useState(false);
 
   useEffect(() => {
     if (!showEmojiPicker) return;
@@ -63,6 +66,21 @@ function Textarea({ fetchPosts, setIsLoading, outerLayerRef }) {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/user/me", {
+        withCredentials: true,
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error("获取用户信息失败:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   const handlePost = async () => {
     const formData = new FormData();
     files.forEach((file) => {
@@ -70,35 +88,39 @@ function Textarea({ fetchPosts, setIsLoading, outerLayerRef }) {
     });
 
     try {
-      const uploadResponse = await axios.post(
-        "http://localhost:3001/Content/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", //多个数据的请求头
+      if (user.state === "active") {
+        const uploadResponse = await axios.post(
+          "http://localhost:3001/Content/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data", //多个数据的请求头
+            },
+          }
+        );
+
+        const fileUrls = uploadResponse.data.fileUrls; // 直接获取返回的文件 URLs
+        // setUrls((prev) => [...prev, ...fileUrls]); // 更新预览图片的 URL 列表
+        await axios.post(
+          "http://localhost:3001/Content/addContent",
+          {
+            content: inputValue,
+            urls: fileUrls,
           },
-        }
-      );
-
-      const fileUrls = uploadResponse.data.fileUrls; // 直接获取返回的文件 URLs
-      // setUrls((prev) => [...prev, ...fileUrls]); // 更新预览图片的 URL 列表
-      await axios.post(
-        "http://localhost:3001/Content/addContent",
-        {
-          content: inputValue,
-          urls: fileUrls,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      setInputValue("");
-      setUrls([]);
-      setFiles([]); // 清空选中的文件
-      textareaRef.current.style.height = "auto"; // 重置文本框高度
-      fetchPosts(); // 重新加载帖子
-      outerLayerRef.current.scrollTo({ top: 0, behavior: "instant" }); // 直接滚动到顶部
+          {
+            withCredentials: true,
+          }
+        );
+        setInputValue("");
+        setUrls([]);
+        setFiles([]); // 清空选中的文件
+        textareaRef.current.style.height = "auto"; // 重置文本框高度
+        fetchPosts(); // 重新加载帖子
+        outerLayerRef.current.scrollTo({ top: 0, behavior: "instant" }); // 直接滚动到顶部
+      } else {
+        setShowBanDialog(true);
+        return;
+      }
     } catch (error) {
       console.error("发帖失败:", error);
       alert("发帖失败，请稍后再试！");
@@ -263,6 +285,7 @@ function Textarea({ fetchPosts, setIsLoading, outerLayerRef }) {
           <Emoji onEmojiSelect={handleEmojiSelect} />
         </div>
       )}
+      <BanDialog open={showBanDialog} onClose={setShowBanDialog} />
     </div>
   );
 }

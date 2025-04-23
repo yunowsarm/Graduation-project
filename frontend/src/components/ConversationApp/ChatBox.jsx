@@ -14,11 +14,17 @@ function ChatBox() {
       setCurrentUser(res.data);
     }
     getUser();
-  },[]);
+  }, []);
   return (
     <div className={styles.messages_container}>
-      <ConversationList setCurrentConversation={setCurrentConversation} currentUserId={currentUser.id}/>
-      <ChatWindow conversationId={currentConversation} currentUserId={currentUser.id}/>
+      <ConversationList
+        setCurrentConversation={setCurrentConversation}
+        currentUserId={currentUser.id}
+      />
+      <ChatWindow
+        conversationId={currentConversation}
+        currentUserId={currentUser.id}
+      />
     </div>
   );
 }

@@ -1,62 +1,23 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import styles from "./OwnPosts.module.css";
 import ImagePreviewModal from "../ImagePreviewModal";
 import PostDetailModal from "./PostDetailModal";
+import ConfirmModal from "../ConfirmModal/ConfirmModal";
+import { ThemeContext } from "../../context/ThemeContext";
 
 function OwnPosts({ canScroll, setCanParentScroll }) {
   const [posts, setPosts] = useState([]);
   const postsRef = useRef(null);
   const [previewImageIndex, setPreviewImageIndex] = useState(null);
   const [currentPost, setCurrentPost] = useState(null);
-  const [showPostDetail, setShowPostDetail] = useState(false); // 帖子详情窗口的状态
+  const [showPostDetail, setShowPostDetail] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null); // 当前待删除的帖子
+  const { theme } = useContext(ThemeContext);
   const postsElement = postsRef.current;
 
-  // 监听子组件的滚动事件
-  const handleChildScroll = () => {
-    if (postsElement) {
-      if (postsElement.scrollTop === 0) {
-        // 当滚动到顶部时，通知父组件
-        setCanParentScroll(true);
-      } else {
-        // 如果没有滚动到顶部，通知父组件
-        setCanParentScroll(false);
-      }
-    }
-  };
-
-  // 打开帖子详情窗口
-  const handlePostClick = (post) => {
-    if (postsElement.scrollTop === 0) {
-      setCanParentScroll(false);
-    }
-    setCurrentPost(post);
-    setShowPostDetail(true);
-  };
-
-  // 关闭帖子详情窗口
-  const handleClosePostDetail = () => {
-    if (postsElement.scrollTop === 0) {
-      setCanParentScroll(true);
-    }
-    setCurrentPost(null);
-    setShowPostDetail(false);
-  };
-
-  // 处理图片点击
-  const handleImageClick = (index, post) => {
-    setPreviewImageIndex(index);
-    setCurrentPost(post);
-  };
-
-  // 关闭图片预览窗口
-  const handleCloseModal = () => {
-    setPreviewImageIndex(null);
-    setCurrentPost(null);
-  };
-
-  // 获取用户的帖子
+  // 获取帖子
   const getOwnPosts = async () => {
     try {
       const response = await axios.get("http://localhost:3001/user/ownPosts", {
@@ -68,27 +29,75 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
     }
   };
 
+  // 删除帖子
+  const handleDeletePost = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:3001/posts/delete/${postId}`, {
+        withCredentials: true,
+      });
+      getOwnPosts();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 控制父组件滚动
+  const handleChildScroll = () => {
+    if (postsElement) {
+      setCanParentScroll(postsElement.scrollTop === 0);
+    }
+  };
+
   useEffect(() => {
     getOwnPosts();
   }, []);
 
   useEffect(() => {
     if (!canScroll) return;
-    const postsElement = postsRef.current;
-    if (postsElement && canScroll) {
+    if (postsElement) {
       postsElement.addEventListener("scroll", handleChildScroll);
     }
     return () => {
-      if (postsElement && canScroll) {
+      if (postsElement) {
         postsElement.removeEventListener("scroll", handleChildScroll);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canScroll]);
+
+  // 打开详情
+  const handlePostClick = (post) => {
+    if (postsElement?.scrollTop === 0) {
+      setCanParentScroll(false);
+    }
+    setCurrentPost(post);
+    setShowPostDetail(true);
+  };
+
+  // 关闭详情
+  const handleClosePostDetail = () => {
+    if (postsElement?.scrollTop === 0) {
+      setCanParentScroll(true);
+    }
+    setCurrentPost(null);
+    setShowPostDetail(false);
+  };
+
+  // 预览图片
+  const handleImageClick = (index, post) => {
+    setPreviewImageIndex(index);
+    setCurrentPost(post);
+  };
+
+  const handleCloseModal = () => {
+    setPreviewImageIndex(null);
+    setCurrentPost(null);
+  };
 
   return (
     <div
-      className={`${styles.ownPosts} ${canScroll ? styles.scrollable : ""}`}
+      className={`${
+        theme === "dark" ? styles.ownPosts : styles.ownPostsLight
+      } ${canScroll ? styles.scrollable : ""}`}
       ref={postsRef}
     >
       {posts.length === 0 ? (
@@ -98,14 +107,27 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
           {posts.map((post, index) => (
             <div
               key={post._id || index}
-              className={styles.postItem}
-              onClick={() => handlePostClick(post)} // 点击打开详情窗口
+              className={
+                theme === "dark" ? styles.postItem : styles.postItemLight
+              }
+              onClick={() => handlePostClick(post)}
             >
+              <i
+                className="fi fi-br-trash"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPostToDelete(post);
+                }}
+              ></i>
               {post.isForwarded ? (
                 <>
                   <p
                     style={{ whiteSpace: "pre-line" }}
-                    className={`${styles.postContent} ${styles.clamped}`}
+                    className={`${
+                      theme === "dark"
+                        ? styles.postContent
+                        : styles.postContentLight
+                    } ${styles.clamped}`}
                   >
                     <i className="fi fi-rr-paper-plane"></i>
                     {post.originalPostContent ? (
@@ -120,7 +142,7 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
                       </>
                     )}
                   </p>
-                  {post.originalPostUrl && post.originalPostUrl.length > 0 && (
+                  {post.originalPostUrl?.length > 0 && (
                     <div className={styles.imageGrid}>
                       {post.originalPostUrl.map((imageUrl, index) => (
                         <div className={styles.gridItem} key={index}>
@@ -128,7 +150,7 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
                             src={imageUrl}
                             className={styles.gridImage}
                             onClick={(e) => {
-                              e.stopPropagation(); // 阻止事件冒泡
+                              e.stopPropagation();
                               handleImageClick(index, post);
                             }}
                           />
@@ -144,11 +166,15 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
                 <>
                   <p
                     style={{ whiteSpace: "pre-line" }}
-                    className={`${styles.postContent} ${styles.clamped}`}
+                    className={`${
+                      theme === "dark"
+                        ? styles.postContent
+                        : styles.postContentLight
+                    } ${styles.clamped}`}
                   >
                     {post.content}
                   </p>
-                  {post.url && post.url.length > 0 && (
+                  {post.url?.length > 0 && (
                     <div className={styles.imageGrid}>
                       {post.url.map((imageUrl, index) => (
                         <div className={styles.gridItem} key={index}>
@@ -156,7 +182,7 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
                             src={imageUrl}
                             className={styles.gridImage}
                             onClick={(e) => {
-                              e.stopPropagation(); // 阻止事件冒泡
+                              e.stopPropagation();
                               handleImageClick(index, post);
                             }}
                           />
@@ -171,6 +197,8 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
               )}
             </div>
           ))}
+
+          {/* 全局图片预览 */}
           {previewImageIndex !== null && currentPost && (
             <ImagePreviewModal
               images={
@@ -182,10 +210,25 @@ function OwnPosts({ canScroll, setCanParentScroll }) {
               onClose={handleCloseModal}
             />
           )}
+
+          {/* 帖子详情弹窗 */}
           {showPostDetail && currentPost && (
             <PostDetailModal
-              post={currentPost} // 传递当前帖子
-              onClose={handleClosePostDetail} // 关闭详情窗口
+              post={currentPost}
+              onClose={handleClosePostDetail}
+            />
+          )}
+
+          {/* 删除确认弹窗（全局唯一） */}
+          {postToDelete && (
+            <ConfirmModal
+              isOpen={!!postToDelete}
+              onConfirm={() => {
+                handleDeletePost(postToDelete._id);
+                setPostToDelete(null);
+              }}
+              onCancel={() => setPostToDelete(null)}
+              message={"您确定要删除该帖子吗？"}
             />
           )}
         </>

@@ -4,10 +4,12 @@ import styles from "./SearchByPostContent.module.css";
 import ForwardPost from "../normalPost_forwardPost/ForwardPost";
 import NormalPost from "../normalPost_forwardPost/NormalPost";
 import ImagePreviewModal from "../ImagePreviewModal";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 function SearchByPostContent({ posts = [] }) {
   const [previewImageIndex, setPreviewImageIndex] = useState(null);
   const [currentPost, setCurrentPost] = useState(null); //和要点击后预览的图片有关
+  const { theme } = useContext(ThemeContext);
   const handleContextMenu = (e) => {
     e.preventDefault(); // 禁用右键菜单
   };
@@ -24,6 +26,10 @@ function SearchByPostContent({ posts = [] }) {
       console.log(currentPost);
     }
   };
+
+  useEffect(() => {
+    if (!posts) return;
+  }, [posts]);
   //关闭预览图片
   const handleCloseModal = () => {
     setPreviewImageIndex(null);

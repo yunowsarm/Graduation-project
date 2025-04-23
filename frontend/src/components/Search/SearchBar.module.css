@@ -11,7 +11,20 @@
   position: relative;
 }
 
-.search_container::-webkit-scrollbar {
+.search_containerLight {
+  height: 100vh;
+  width: 100%;
+  background-color: #ffffff;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+  scroll-behavior: smooth;
+  min-height: 100vh;
+  position: relative;
+}
+
+.search_container .search_containerLight::-webkit-scrollbar {
   display: none; /* 隐藏滚动条 */
 }
 
@@ -23,7 +36,6 @@
   height: auto;
   margin-bottom: 8px; /* 使 logo 和输入框之间有一定间距 */
   transform: translate(-50%, -50%);
-  color: #f1f1f1;
 }
 
 .search_input {
@@ -38,7 +50,6 @@
   outline: none;
   padding: 10px 20px;
   background-color: #ffffff;
-  color: #000000;
   box-sizing: border-box;
   font-family: "Noto Sans SC", sans-serif;
   font-weight: 400;
@@ -47,18 +58,38 @@
   transition: all 0.3s ease;
 }
 
-.search_input:focus {
+.search_inputLight {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 500px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  background-color: #d2d2d2;
+  box-sizing: border-box;
+  font-family: "Noto Sans SC", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 40px;
+  transition: all 0.3s ease;
+}
+
+.search_input .search_inputLight:focus {
   padding-top: 20px;
   padding-bottom: 20px;
   box-shadow: 0 0 10px rgba(255, 225, 0, 0.5);
 }
 
-.search_input::placeholder {
+.search_input.search_inputLight::placeholder {
   transition: opacity 0.3s ease;
 }
 
-.search_input:focus::placeholder,
-.search_input:not(:placeholder-shown)::placeholder {
+.search_input.search_inputLight:focus::placeholder,
+.search_input.search_inputLight:not(:placeholder-shown)::placeholder {
   opacity: 0;
 }
 
@@ -69,7 +100,6 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 30px;
@@ -81,7 +111,7 @@
 
 .search_suggestions {
   position: absolute; /* 让建议框绝对定位 */
-  top: calc(50% + 22px); /* 通过动态计算，让建议框在输入框下方 */
+  top: calc(50% + 13px); /* 通过动态计算，让建议框在输入框下方 */
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
@@ -99,14 +129,44 @@
   transition: max-height 0.35s ease-in-out, opacity 0.35s ease-in-out;
 }
 
+.search_suggestionsLight {
+  position: absolute; /* 让建议框绝对定位 */
+  top: calc(50% + 13px); /* 通过动态计算，让建议框在输入框下方 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 500px;
+  background-color: #d2d2d2;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 1;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s ease-in-out, opacity 0.35s ease-in-out;
+}
+
 .search_suggestions.open {
   max-height: fit-content;
   opacity: 1;
 }
 
+.search_suggestionsLight.open {
+  max-height: fit-content;
+  opacity: 1;
+}
+
 .suggestion_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 20px;
   cursor: pointer;
+  transition: color 0.3s ease;
+  position: relative;
 }
 
 .suggestion_item.highlight {
@@ -115,7 +175,7 @@
 }
 
 .suggestion_item:hover {
-  background-color: #f1f1f1;
+  color: #0083fe;
 }
 
 @media screen and (max-width: 600px) {
@@ -128,4 +188,32 @@
     max-height: 200px;
     overflow-y: auto;
   }
+}
+
+.delete_button {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: color 0.2s ease;
+}
+
+.delete_button:hover {
+  color: #e53935;
+}
+
+.clear_all {
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #007bff;
+  cursor: pointer;
+  border-top: 1px solid #ddd;
+  transition: color 0.2s ease;
+}
+
+.clear_all:hover {
+  color: #0056b3;
 }

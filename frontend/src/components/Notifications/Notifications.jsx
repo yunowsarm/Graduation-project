@@ -1,16 +1,17 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { notificationSocket } from "../socket.io/socket";
 import styles from "./Notifications.module.css";
 import { useNavigate } from "react-router-dom";
-
+import { ThemeContext } from "../../context/ThemeContext";
 const Notifications = ({ currentUserId }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const notificationsPerPage = 11;
   const navigate = useNavigate();
+  const { theme } = useContext(ThemeContext);
 
   // 组件加载时获取初始通知数据
   useEffect(() => {
@@ -152,14 +153,20 @@ const Notifications = ({ currentUserId }) => {
     return (
       <div
         key={notif._id}
-        className={`${styles.notificationItem} ${
-          notif.isRead ? styles.read : styles.unread
-        }`}
+        className={`${
+          theme === "dark"
+            ? styles.notificationItem
+            : styles.notificationItemLight
+        } ${notif.isRead ? styles.read : styles.unread}`}
         onClick={() => handleNotificationClick(notif._id, notif)}
       >
         <span className={styles.icon}>{icon}</span>
-        <span className={styles.content}>{notif.content}</span>
-        <span className={styles.time}>
+        <span
+          className={theme === "dark" ? styles.content : styles.contentLight}
+        >
+          {notif.content}
+        </span>
+        <span className={theme === "dark" ? styles.time : styles.timeLight}>
           {new Date(notif.createdAt).toLocaleString()}
         </span>
         {/* 红点显示在每个通知右侧 */}
@@ -169,17 +176,34 @@ const Notifications = ({ currentUserId }) => {
   };
 
   return (
-    <div className={styles.notificationContainer}>
-      <div className={styles.notificationHeader}>
+    <div
+      className={
+        theme === "dark"
+          ? styles.notificationContainer
+          : styles.notificationContainerLight
+      }
+    >
+      <div
+        className={
+          theme === "dark"
+            ? styles.notificationHeader
+            : styles.notificationHeaderLight
+        }
+      >
         <span className={styles.iconWrapper}>
           🔔
           {unreadCount > 0 && (
             <span className={styles.badge}>{unreadCount}</span>
           )}
         </span>
-        <span>通知</span>
+
         {/* 一键标记所有通知为已读按钮 */}
-        <button className={styles.markAllBtn} onClick={handleMarkAllAsRead}>
+        <button
+          className={
+            theme === "dark" ? styles.markAllBtn : styles.markAllBtnLight
+          }
+          onClick={handleMarkAllAsRead}
+        >
           一键已读
         </button>
       </div>
@@ -187,25 +211,40 @@ const Notifications = ({ currentUserId }) => {
         {notifications.length > 0 ? (
           currentNotifications.map((notif) => renderNotificationItem(notif))
         ) : (
-          <p>暂无通知</p>
+          <p
+            className={
+              theme === "dark"
+                ? styles.noNotification
+                : styles.noNotificationLight
+            }
+          >
+            暂无通知
+          </p>
         )}
       </div>
       {/* 分页控制 */}
       {notifications.length > notificationsPerPage && (
-        <div className={styles.pagination}>
-          <button onClick={handlePrevPage} disabled={currentPage === 1}>
-            上一页
-          </button>
+        <div
+          className={
+            theme === "dark" ? styles.pagination : styles.paginationLight
+          }
+        >
+          <i
+            className="fi fi-sr-left"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          />
+
           <span>
             第 {currentPage} 页，共{" "}
             {Math.ceil(notifications.length / notificationsPerPage)} 页
           </span>
-          <button
+
+          <i
+            className="fi fi-sr-right"
             onClick={handleNextPage}
             disabled={indexOfLastNotification >= notifications.length}
-          >
-            下一页
-          </button>
+          />
         </div>
       )}
     </div>

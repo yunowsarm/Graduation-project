@@ -162,7 +162,15 @@ function ForwardPost({
           onMouseLeave={hideTooltip}
         >
           <img src={post.avatar} className={styles.forwardAvatar} />
-          <strong className={styles.forwardUserName}>{post.name}</strong>
+          <strong
+            className={
+              theme === "dark"
+                ? styles.forwardUserName
+                : styles.forwardUserNameLight
+            }
+          >
+            {post.name}
+          </strong>
           {/* 用户信息 Tooltip */}
           {isTooltipVisible && (
             <div
@@ -196,9 +204,11 @@ function ForwardPost({
         <p
           ref={postContentRef}
           style={{ whiteSpace: "pre-line" }}
-          className={`${styles.forwardPostContent} ${
-            isPostExpanded ? styles.expanded : styles.clamped
-          }`}
+          className={`${
+            theme === "dark"
+              ? styles.forwardPostContent
+              : styles.forwardPostContentLight
+          } ${isPostExpanded ? styles.expanded : styles.clamped}`}
         >
           {post.content}
         </p>
@@ -227,7 +237,13 @@ function ForwardPost({
             onMouseLeave={hideOriginalTooltip}
           >
             <img src={post.originalPostAvatar} className={styles.avatar} />
-            <strong className={styles.userName}>{post.originalPostName}</strong>
+            <strong
+              className={
+                theme === "dark" ? styles.userName : styles.userNameLight
+              }
+            >
+              {post.originalPostName}
+            </strong>
             {/* 用户信息 Tooltip */}
             {/* 把参数一个一个传递 */}
             {isOriginalTooltipVisible && (
@@ -260,7 +276,9 @@ function ForwardPost({
           <p
             ref={originalPostContentRef}
             style={{ whiteSpace: "pre-line" }}
-            className={`${styles.postContent} ${
+            className={`${
+              theme === "dark" ? styles.postContent : styles.postContentLight
+            } ${
               isOriginalPostExpanded
                 ? styles.expanded
                 : styles.originalPostClamped
